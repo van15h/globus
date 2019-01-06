@@ -51,29 +51,23 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
   $deleteHotelSql = "DELETE FROM Hotel WHERE ID = " . $_GET['ID'];
 
-  // $stmt = @oci_parse($conn, $deleteHotelSql);
-  // $result = @oci_execute($stmt);
-
   $result = mysqli_query($conn,$deleteHotelSql);
 
   if (!$result) {
     die("error while deleting id=" . $_GET['ID']);
+  } else {
+    header("Location: ?");
   }
-  // else {
-  //   header("Location: ?");
-  // }
 }
 
 //create reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createHotelSql = "INSERT INTO Hotel (id, name, sterne, verpflegung, plz, ort, strasse) VALUES (" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['STERNE'] . "','" . $_POST['verpflegung'] . "',
-  '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "')";
+  $createHotelSql = "INSERT INTO Hotel (id, name, sterne, verpflegung, plz, ort, strasse) VALUES (" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['STERNE'] . "','" . $_POST['verpflegung'] . "','" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "')";
 
-  $stmt = @oci_parse($conn, $createHotelSql);
-  $result = @oci_execute($stmt);
+  $result = mysqli_query($conn, $createHotelSql);
 
   if (!$result) {
-    $error = oci_error($stmt);
+    die("error while creating hotel");
   } else {
     header("Location: ?");
   }
@@ -103,13 +97,9 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
 
 //add order for beautify
 $searchHotelSql .= " ORDER BY ID";
-//parse and execute sql statement
+//execute sql statement
 $result = mysqli_query($conn,$searchHotelSql);
 
-// if (!$result) {
-//   $error = oci_error($stmt);
-//   die("Connection failed: " . mysqli_connect_error());
-// }
 ?>
 
 <html>
@@ -244,7 +234,6 @@ $result = mysqli_query($conn,$searchHotelSql);
 
 
         <?php
-        //oci_free_statement($stmt);
         mysqli_free_result($result);
         mysqli_close($conn);
         ?>
@@ -252,8 +241,7 @@ $result = mysqli_query($conn,$searchHotelSql);
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-
-            <!-- форма -->
+             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
