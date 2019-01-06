@@ -76,19 +76,22 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 //update reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM Hotel WHERE ID = '" . $_GET['ID'] . "'";
-  $stmt = oci_parse($conn, $getRowForUpdate);
-  oci_execute($stmt);
-  $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
+  // $stmt = oci_parse($conn, $getRowForUpdate);
+  // oci_execute($stmt);
+  // $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
+  $stmt = mysqli_query($conn, $getRowForUpdate);
+  $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
-    $updateHotelSql = "UPDATE HOTEL SET NAME = '" . $_POST['NAME'] . "', STERNE = '" . $_POST['STERNE'] . "', verpflegung = '" . $_POST['verpflegung'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "',
+    $updateHotelSql = "UPDATE Hotel SET NAME = '" . $_POST['NAME'] . "', STERNE = '" . $_POST['STERNE'] . "', verpflegung = '" . $_POST['verpflegung'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "',
     STRASSE = '" . $_POST['STRASSE'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
-    $stmt = @oci_parse($conn, $updateHotelSql);
-    $result = @oci_execute($stmt);
+    // $stmt = @oci_parse($conn, $updateHotelSql);
+    // $result = @oci_execute($stmt);
+    $result = mysqli_query($conn, $updateHotelSql);
 
     if (!$result) {
-      $error = oci_error($stmt);
+      die("error while updating hotel");
     } else {
       header("Location: ?");
     }
@@ -183,7 +186,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
-                    <th class="th1" width="50">ID</th>
+                    <th class="th1" width="50">id</th>
                     <th class="th1" width="300">name</th>
                     <th class="th1" width="300">sterne</th>
                     <th class="th1" width="300"> verpflegung </th>
@@ -196,6 +199,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </thead>
                 <tbody>
                   <!-- строка с поиском -->
+
                   <tr>
                     <td><input name='ID' value='<?= @$_GET['ID'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='NAME' value='<?= @$_GET['NAME'] ?: '' ?>' style="width:100%" /></td>
@@ -224,7 +228,6 @@ $result = mysqli_query($conn,$searchHotelSql);
                     <td><a href="?action=delete&ID=<?= $row["id"] ?>">delete</a></td>
                   </tr>
                   <?php endwhile; ?>
-
                 </tbody>
               </table>
             </form>
@@ -246,14 +249,14 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['ID'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
+                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['NAME'] : ''?>" />
+                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['name'] : ''?>" />
                 </div>
               </div>
 
@@ -261,7 +264,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">sterne</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='STERNE' value="<?=isset($rowForUpdate) ? $rowForUpdate['STERNE'] : ''?>" />
+                  <input class="form-control" name='STERNE' value="<?=isset($rowForUpdate) ? $rowForUpdate['sterne'] : ''?>" />
                 </div>
               </div>
               <!-- строка с verpflegung label + input -->
@@ -280,7 +283,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">plz</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['PLZ'] : ''?>" />
+                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['plz'] : ''?>" />
                 </div>
               </div>
 
@@ -288,7 +291,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">ort</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ORT'] : ''?>" />
+                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ort'] : ''?>" />
                 </div>
               </div>
 
@@ -296,7 +299,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">strasse</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['STRASSE'] : ''?>" />
+                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['strasse'] : ''?>" />
                 </div>
               </div>
 
