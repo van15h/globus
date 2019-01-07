@@ -1,4 +1,3 @@
-
 <?php
     include __DIR__ . '/../src/config.php';
     
@@ -14,7 +13,8 @@
 
 //preparing sql query for kunde search
 $conditions = array();
-$searchSql = "SELECT * FROM kunde";
+$searchSql = "SELECT Kunde.personid AS personid, Kunde.kundenummer AS kundenummer, Kunde.telefonnummer AS telefonnummer, Kunde.kontodaten AS kontodaten, Person.name AS name FROM Kunde INNER JOIN Person ON Person.id = Kunde.personid
+";
 
 //search kunde
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -30,6 +30,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
   if (!empty($_GET['TELEFONNUMMER'])) {
     $conditions[] = "TELEFONNUMMER = " . $_GET['TELEFONNUMMER'];
   }
+  
+  if (!empty($_GET['PERSON'])) {
+    $conditions[] = "name = '" . $_GET['PERSON'] . "'";
+  }
 
   if (!empty($_GET['KONTODATEN'])) {
     $conditions[] = "UPPER(KONTODATEN) like '%" . strtoupper($_GET['KONTODATEN']) . "%'";
@@ -42,7 +46,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 
 //delete kunde
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteSql = "DELETE FROM kunde WHERE PERSONID = " . $_GET['PERSONID'];
+  $deleteSql = "DELETE FROM Kunde WHERE PERSONID = " . $_GET['PERSONID'];
 
   //$stmt = @oci_parse($conn, $deleteSql);
   //$result = @oci_execute($stmt);
@@ -50,7 +54,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
     $result = mysqli_query($conn,$deleteSql);
     
   if (!$result) {
-      die("error while deleting kunde");
+      die("error while deleting kunde" . $_GET['ID']);
   } else {
     header("Location: ?");
   }
@@ -58,14 +62,14 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
 //create kunde
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createSql = "INSERT INTO kunde (PERSONID, KUNDENUMMER, TELEFONNUMMER, KONTODATEN) VALUES(" . $_POST['PERSONID'] . ", " . $_POST['KUNDENUMMER'] . ", " . $_POST['TELEFONNUMMER'] . ", '" . $_POST['KONTODATEN'] . "')";
+  $createSql = "INSERT INTO Kunde (PERSONID, KUNDENUMMER, TELEFONNUMMER, KONTODATEN) VALUES(" . $_POST['PERSONID'] . ", " . $_POST['KUNDENUMMER'] . ", " . $_POST['TELEFONNUMMER'] . ", '" . $_POST['KONTODATEN'] . "')";
 
   //$stmt = @oci_parse($conn, $createSql);
   //$result = @oci_execute($stmt);
 
   $result = mysqli_query($conn, $createSql);
   if (!$result) {
-    die("error while creating kunde");
+    die("error while creating kunde". mysqli_error($conn));
   } else {
     header("Location: ?");
   }
@@ -73,7 +77,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 
 //update kunde
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM kunde WHERE PERSONID = " . $_GET['PERSONID'];
+  $getRowForUpdate = "SELECT * FROM Kunde WHERE PERSONID = " . $_GET['PERSONID'];
   //$stmt = oci_parse($conn, $getRowForUpdate);
   //oci_execute($stmt);
   //$rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
@@ -82,14 +86,14 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
     $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
     
   if (!empty($_POST)) {
-    $updateSql = "UPDATE kunde SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", TELEFONNUMMER = " . $_POST['TELEFONNUMMER'] . ", KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
+    $updateSql = "UPDATE Kunde SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", TELEFONNUMMER = " . $_POST['TELEFONNUMMER'] . ", KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
 
    // $stmt = @oci_parse($conn, $updateSql);
    // $result = @oci_execute($stmt);
 
    $result = mysqli_query($conn, $updateSql);
     if (!$result) {
-        die("error while updating kunde");
+        die("error while updating kunde". mysqli_error($conn));
 
     } else {
       header("Location: ?");
@@ -111,7 +115,7 @@ $searchSql .= " ORDER BY PERSONID";
 //$stmt2 = oci_parse($conn, 'select ID, NAME from person');
 //$result2 = oci_execute($stmt2);
 
-      $result2 = mysqli_query($conn,'select ID, NAME from person');
+      $result2 = mysqli_query($conn,'select id, name from Person');
     
 /*if (!$result) {
 die("error while search kunde");
@@ -173,13 +177,13 @@ if (!$result2) {
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
+        <!-- Ð½Ð°Ð²Ð¸Ð³Ð°Ñ†Ð¸Ñ -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Mitarbeiter</li>
         </ol>
 
-        <!-- ошибки если есть -->
+        <!-- Ð¾ÑˆÐ¸Ð±ÐºÐ¸ ÐµÑÐ»Ð¸ ÐµÑÑ‚ÑŒ -->
 
         <?php if (!empty($error)): ?>
           <div class="alert alert-danger">
@@ -189,18 +193,18 @@ if (!$result2) {
           </div>
         <?php endif; ?>
 
-        <!-- основная панель с таблицей -->
+        <!-- Ð¾ÑÐ½Ð¾Ð²Ð½Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ Ñ Ñ‚Ð°Ð±Ð»Ð¸Ñ†ÐµÐ¹ -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- основная панель с таблицей -->
+            <!-- Ð¾ÑÐ½Ð¾Ð²Ð½Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ Ñ Ñ‚Ð°Ð±Ð»Ð¸Ñ†ÐµÐ¹ -->
             <form id='hotel2' method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
+              <!-- ÐºÐ½Ð¾Ð¿ÐºÐ° Ñ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸ÐµÐ¼ -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
+              <!-- Ð¾ÑÐ½Ð¾Ð²Ð½Ð°Ñ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ð° -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -214,10 +218,10 @@ if (!$result2) {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
+                  <!-- ÑÑ‚Ñ€Ð¾ÐºÐ° Ñ Ð¿Ð¾Ð¸ÑÐºÐ¾Ð¼ -->
                   <tr>
                     <td><input name='PERSONID' value='<?= @$_GET['PERSONID'] ?: '' ?>' style="width:100%" /></td>
-                    <td></td>
+                    <td><input name='PERSON' value='<?= @$_GET['PERSON'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='KUNDENUMMER' value='<?= @$_GET['KUNDENUMMER'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='TELEFONNUMMER' value='<?= @$_GET['TELEFONNUMMER'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='KONTODATEN' value='<?= @$_GET['KONTODATEN'] ?: '' ?>' style="width:100%" /></td>
@@ -225,30 +229,21 @@ if (!$result2) {
                     <td></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
-                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
+                  <!-- Ð²Ñ‹Ð²Ð¾Ð´ ÑÑ‚Ñ€Ð¾Ðº Ñ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸ÐµÐ¹ Ð¸Ð· Ð±Ð°Ð·Ñ‹ -->
+                  <?php 
+				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+				  echo $row;
+				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
                     <tr>
                       <td class="th1"><?= $row['personid'] ?></td>
-                      <td>
-                        <?php
-                          while($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
-                            echo $row2['id'] === $row['personid'] ? $row2['name'] : '';
-                          }
-
-                          //rewind cursor
-                         // oci_execute($stmt2);
-                           
-                            mysqli_free_result($result2);
-                            mysqli_close($conn);
-                        ?>
-                      </td>
+                      <td><?= $row['name'] ?></td>
                       <td><?= $row['kundenummer'] ?></td>
                       <td><?= $row['telefonnummer'] ?></td>
                       <td><?= $row['kontodaten'] ?></td>
-                      <td><a href="?action=update&PERSONID=<?= $row["PERSONID"] ?>">update</a></td>
-                      <td><a href="?action=delete&PERSONID=<?= $row["PERSONID"] ?>">delete</a></td>
+                      <td><a href="?action=update&PERSONID=<?= $row["personid"] ?>">update</a></td>
+                      <td><a href="?action=delete&PERSONID=<?= $row["personid"] ?>">delete</a></td>
                     </tr>
-                  <?php endwhile; ?>
+                  <?php } ?>
 
                 </tbody>
               </table>
@@ -265,18 +260,18 @@ if (!$result2) {
             
             ?>
 
-        <!-- вторая панель с формой -->
+        <!-- Ð²Ñ‚Ð¾Ñ€Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ Ñ Ñ„Ð¾Ñ€Ð¼Ð¾Ð¹ -->
         <div class="panel panel-default">
           <div class="panel-body">
             
-            <!-- форма -->
+            <!-- Ñ„Ð¾Ñ€Ð¼Ð° -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">PERSON</label>
                 <div class="col-sm-9">
-                  <select class="form-control" name='PERSONID' <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>>
+                  <select class="form-control" name='PERSONID' >
                     <?php while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
-                      <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['PERSONID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
+                      <option value="<?= $row['id'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['personid'] === $row['ID'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -303,7 +298,7 @@ if (!$result2) {
                 </div>
               </div>
 
-              <!-- строка с кнопками отправки и сброса формы -->
+              <!-- ÑÑ‚Ñ€Ð¾ÐºÐ° Ñ ÐºÐ½Ð¾Ð¿ÐºÐ°Ð¼Ð¸ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²ÐºÐ¸ Ð¸ ÑÐ±Ñ€Ð¾ÑÐ° Ñ„Ð¾Ñ€Ð¼Ñ‹ -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>
@@ -315,12 +310,7 @@ if (!$result2) {
           </div>
         </div>
 
-        <?php
-            //oci_free_statement($stmt2);
-            mysqli_free_result($result2);
-            mysqli_close($conn);
-            
-            ?>
+        
         
       </div>
     </div>
