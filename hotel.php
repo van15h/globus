@@ -138,9 +138,6 @@ $result = mysqli_query($conn,$searchHotelSql);
                 <a href="platzierung.php">Platzierung</a>
               </li>
               <li>
-                <a href="procedure.php">Procedure</a>
-              </li>
-              <li>
                 <a href="reise.php">Reise</a>
               </li>
               <li>
@@ -288,7 +285,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                   <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['strasse'] : ''?>" />
                 </div>
               </div>
-
+              
 
               <!-- send and reset buttons -->
               <div class="form-group">
