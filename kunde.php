@@ -1,17 +1,16 @@
-<?php
-    
-    include __DIR__ . '/../src/config.php';
 
+<?php
+    include __DIR__ . '/../src/config.php';
+    
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-
+    
     // Check connection
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
-}
-    
-    
-    
+    }
+
+
 
 //preparing sql query for kunde search
 $conditions = array();
@@ -48,10 +47,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
   //$stmt = @oci_parse($conn, $deleteSql);
   //$result = @oci_execute($stmt);
 
-     $result = mysqli_query($conn,$deleteSql);
+    $result = mysqli_query($conn,$deleteSql);
     
   if (!$result) {
-   die("error while deleting id=" . $_GET['PERSONID']);
+      die("error while deleting kunde");
   } else {
     header("Location: ?");
   }
@@ -61,11 +60,12 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $createSql = "INSERT INTO kunde (PERSONID, KUNDENUMMER, TELEFONNUMMER, KONTODATEN) VALUES(" . $_POST['PERSONID'] . ", " . $_POST['KUNDENUMMER'] . ", " . $_POST['TELEFONNUMMER'] . ", '" . $_POST['KONTODATEN'] . "')";
 
- $result = mysqli_query($conn, $createHotelSql);
-    
-    
+  //$stmt = @oci_parse($conn, $createSql);
+  //$result = @oci_execute($stmt);
+
+  $result = mysqli_query($conn, $createSql);
   if (!$result) {
-     die("error while creating kunde");
+    die("error while creating kunde");
   } else {
     header("Location: ?");
   }
@@ -76,19 +76,21 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM kunde WHERE PERSONID = " . $_GET['PERSONID'];
   //$stmt = oci_parse($conn, $getRowForUpdate);
   //oci_execute($stmt);
-  $stmt = mysqli_query($conn, $getRowForUpdate);
-  $rowForUpdate = mysqli_fetch_array($stmt, OCI_ASSOC);
+  //$rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
 
+    $stmt = mysqli_query($conn, $getRowForUpdate);
+    $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
+    
   if (!empty($_POST)) {
     $updateSql = "UPDATE kunde SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", TELEFONNUMMER = " . $_POST['TELEFONNUMMER'] . ", KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
 
-    //$stmt = @oci_parse($conn, $updateSql);
-    //$result = @oci_execute($stmt);
+   // $stmt = @oci_parse($conn, $updateSql);
+   // $result = @oci_execute($stmt);
 
-    $result = mysqli_query($conn, $updateHotelSql);
+   $result = mysqli_query($conn, $updateSql);
     if (!$result) {
         die("error while updating kunde");
-        
+
     } else {
       header("Location: ?");
     }
@@ -102,22 +104,23 @@ $searchSql .= " ORDER BY PERSONID";
 //parse and execute sql statement
 //$stmt = oci_parse($conn, $searchSql);
 //$result = oci_execute($stmt);
-    
-    $result = mysqli_query($conn,$searchSql);
 
+    $result = mysqli_query($conn,$searchSql);
+    
 //additional result for fetching persons for select dropdown
 //$stmt2 = oci_parse($conn, 'select ID, NAME from person');
 //$result2 = oci_execute($stmt2);
+
+      $result = mysqli_query($conn,'select ID, NAME from person');
     
-    $result = mysqli_query($conn,'select ID, NAME from person');
-
-
 if (!$result) {
-    die("error");
+    die("error while adding kunde");
 }
 
 if (!$result2) {
-    die("error");
+    die("error while adding kunde");
+
+}
 ?>
 
 <html>
@@ -225,20 +228,23 @@ if (!$result2) {
                   <!-- вывод строк с информацией из базы -->
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
                     <tr>
-                      <td class="th1"><?= $row['PERSONID'] ?></td>
+                      <td class="th1"><?= $row['personid'] ?></td>
                       <td>
                         <?php
-                          while($row2 = oci_fetch_array($stmt2, OCI_ASSOC)) {
-                            echo $row2['ID'] === $row['PERSONID'] ? $row2['NAME'] : '';
+                          while($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
+                            echo $row2['id'] === $row['personid'] ? $row2['name'] : '';
                           }
 
                           //rewind cursor
-                        oci_execute($stmt2);
+                         // oci_execute($stmt2);
+                           
+                            mysqli_free_result($result2);
+                            mysqli_close($conn);
                         ?>
                       </td>
-                      <td><?= $row['KUNDENUMMER'] ?></td>
-                      <td><?= $row['TELEFONNUMMER'] ?></td>
-                      <td><?= $row['KONTODATEN'] ?></td>
+                      <td><?= $row['kundenummer'] ?></td>
+                      <td><?= $row['telefonnummer'] ?></td>
+                      <td><?= $row['kontodaten'] ?></td>
                       <td><a href="?action=update&PERSONID=<?= $row["PERSONID"] ?>">update</a></td>
                       <td><a href="?action=delete&PERSONID=<?= $row["PERSONID"] ?>">delete</a></td>
                     </tr>
@@ -252,7 +258,12 @@ if (!$result2) {
         
 
         
-        <?php  oci_free_statement($stmt); ?>
+        <?php
+            //oci_free_statement($stmt);
+            mysqli_free_result($result);
+            mysqli_close($conn);
+            
+            ?>
 
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
@@ -264,7 +275,7 @@ if (!$result2) {
                 <label class="col-sm-3 control-label">PERSON</label>
                 <div class="col-sm-9">
                   <select class="form-control" name='PERSONID' <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>>
-                    <?php while($row = oci_fetch_array($stmt2, OCI_ASSOC)): ?>
+                    <?php while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
                       <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['PERSONID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
                     <?php endwhile; ?>
                   </select>
@@ -304,7 +315,12 @@ if (!$result2) {
           </div>
         </div>
 
-        <?php  oci_free_statement($stmt2); ?>
+        <?php
+            //oci_free_statement($stmt2);
+            mysqli_free_result($result2);
+            mysqli_close($conn);
+            
+            ?>
         
       </div>
     </div>
