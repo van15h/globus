@@ -4,18 +4,19 @@ include __DIR__ . '/../src/config.php';
 //connection to db
 $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
 
-// Check connection
+// Check connection established
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-//preparing sql query for reisebuero search
+//preparing sql query for hotel search
 $conditions = array();
 $searchHotelSql = "SELECT * FROM Hotel";
 
 //search reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
-  //prepare conditions for query if they was passed
+
+  //prepare conditions for query if they were passed
   if (!empty($_GET['ID'])) {
     $conditions[] = "ID = " . $_GET['ID'];
   }
@@ -23,9 +24,11 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
   if (!empty($_GET['NAME'])) {
     $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['NAME']) . "%'";
   }
+
   if (!empty($_GET['STERNE'])) {
     $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['STERNE']) . "%'";
   }
+
   if (!empty($_GET['verpflegung'])) {
     $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['verpflegung']) . "%'";
   }
@@ -49,8 +52,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 
 //delete hotel
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteHotelSql = "DELETE FROM Hotel WHERE ID = " . $_GET['ID'];
 
+  $deleteHotelSql = "DELETE FROM Hotel WHERE ID = " . $_GET['ID'];
   $result = mysqli_query($conn,$deleteHotelSql);
 
   if (!$result) {
@@ -67,7 +70,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $result = mysqli_query($conn, $createHotelSql);
 
   if (!$result) {
-    die("error while creating hotel");
+    die("error while creating hotel "  . mysqli_error($conn));
   } else {
     header("Location: ?");
   }
@@ -76,9 +79,6 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 //update reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM Hotel WHERE ID = '" . $_GET['ID'] . "'";
-  // $stmt = oci_parse($conn, $getRowForUpdate);
-  // oci_execute($stmt);
-  // $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
   $stmt = mysqli_query($conn, $getRowForUpdate);
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
@@ -86,19 +86,17 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
     $updateHotelSql = "UPDATE Hotel SET NAME = '" . $_POST['NAME'] . "', STERNE = '" . $_POST['STERNE'] . "', verpflegung = '" . $_POST['verpflegung'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "',
     STRASSE = '" . $_POST['STRASSE'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
-    // $stmt = @oci_parse($conn, $updateHotelSql);
-    // $result = @oci_execute($stmt);
     $result = mysqli_query($conn, $updateHotelSql);
 
     if (!$result) {
-      die("error while updating hotel");
+      die("error while updating hotel" . mysqli_error($conn));
     } else {
       header("Location: ?");
     }
   }
 }
 
-//add order for beautify
+//add ordering
 $searchHotelSql .= " ORDER BY ID";
 //execute sql statement
 $result = mysqli_query($conn,$searchHotelSql);
@@ -155,34 +153,24 @@ $result = mysqli_query($conn,$searchHotelSql);
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
+        <!-- navigation menu -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Hotel</li>
         </ol>
 
-        <!-- ошибки если есть -->
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
-
-        <!-- основная панель с таблицей -->
+        <!-- main div with table -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- основная панель с таблицей -->
+            <!-- main form with table -->
             <form id='hotel2' method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
+              <!-- refresh -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
+              <!-- main table -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -198,8 +186,8 @@ $result = mysqli_query($conn,$searchHotelSql);
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
 
+                  <!-- search -->
                   <tr>
                     <td><input name='ID' value='<?= @$_GET['ID'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='NAME' value='<?= @$_GET['NAME'] ?: '' ?>' style="width:100%" /></td>
@@ -212,7 +200,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                     <td></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
+                  <!-- parse db request -->
                   <?php
                   while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)):
                   ?>
@@ -234,17 +222,15 @@ $result = mysqli_query($conn,$searchHotelSql);
           </div>
         </div>
 
-
-
         <?php
         mysqli_free_result($result);
         mysqli_close($conn);
         ?>
 
-        <!-- вторая панель с формой -->
+        <!-- second form -->
         <div class="panel panel-default">
           <div class="panel-body">
-             <!-- форма -->
+             <!-- fields -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
@@ -260,14 +246,14 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
 
-              <!-- строка с STERNE label + input -->
+              <!-- sterne label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">sterne</label>
                 <div class="col-sm-10">
                   <input class="form-control" name='STERNE' value="<?=isset($rowForUpdate) ? $rowForUpdate['sterne'] : ''?>" />
                 </div>
               </div>
-              <!-- строка с verpflegung label + input -->
+              <!-- verpflegung label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">verpflegung</label>
                 <div class="col-sm-10">
@@ -279,7 +265,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
 
-              <!-- строка с plz label + input -->
+              <!-- plz label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">plz</label>
                 <div class="col-sm-10">
@@ -287,7 +273,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
 
-              <!-- строка с ort label + input -->
+              <!-- ort label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">ort</label>
                 <div class="col-sm-10">
@@ -295,7 +281,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
 
-              <!-- строка с STRASSE label + input -->
+              <!-- strasse label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">strasse</label>
                 <div class="col-sm-10">
@@ -304,7 +290,7 @@ $result = mysqli_query($conn,$searchHotelSql);
               </div>
 
 
-              <!-- строка с кнопками отправки и сброса формы -->
+              <!-- send and reset buttons -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>
