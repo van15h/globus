@@ -158,7 +158,7 @@ $result = mysqli_query($conn,$searchHotelSql);
 
         <!-- main div with table -->
         <div class="panel panel-default">
-          <div class="panel-body">
+          <div class="panel-body" style="height: 450px; overflow-y: auto;">
 
             <!-- main form with table -->
             <form id='hotel2' method='get'>
@@ -285,7 +285,7 @@ $result = mysqli_query($conn,$searchHotelSql);
                   <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['strasse'] : ''?>" />
                 </div>
               </div>
-              
+
 
               <!-- send and reset buttons -->
               <div class="form-group">

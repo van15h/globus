@@ -160,7 +160,7 @@ if (!$result2) {
 
         <!-- main panel -->
         <div class="panel panel-default">
-          <div class="panel-body" style="height: 500px; overflow-y: auto;">
+          <div class="panel-body" style="height: 450px; overflow-y: auto;">
 
             <!-- form with table -->
             <form method='get'>
