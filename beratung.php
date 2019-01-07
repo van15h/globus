@@ -8,11 +8,11 @@
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
-    
-    
+
+
 //preparing sql query for beratung search
 $conditions = array();
-$searchSql = "SELECT * FROM beratung";
+$searchSql = "SELECT * FROM Beratung";
 
 //search beratung
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -37,10 +37,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
   $deleteSql = "DELETE FROM beratung WHERE KUNDENUMMER = " . $_GET['KUNDENUMMER'] . " AND REISEID = " . $_GET['REISEID'] . " AND STEUERNUMMER = " . $_GET['STEUERNUMMER'];
 
-   $result = mysqli_query($conn,$deleteHotelSql);
+   $result = mysqli_query($conn,$deleteSql);
 
   if (!$result) {
-    $error = oci_error($stmt);
+    die("error while deleting from beratung "  . mysqli_error($conn));
   } else {
     header("Location: ?");
   }
@@ -48,12 +48,12 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
 //create beratung
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createSql = "INSERT INTO beratung (KUNDENUMMER, REISEID, STEUERNUMMER) VALUES(" . $_POST['KUNDENUMMER'] . ", " . $_POST['REISEID'] . ", " . $_POST['STEUERNUMMER'] . ")";
+  $createSql = "INSERT INTO Beratung (KUNDENUMMER, REISEID, STEUERNUMMER) VALUES(" . $_POST['KUNDENUMMER'] . ", " . $_POST['REISEID'] . ", " . $_POST['STEUERNUMMER'] . ")";
 
-  $result = mysqli_query($conn, $createHotelSql);
-    
+  $result = mysqli_query($conn, $createSql);
+
   if (!$result) {
-    $error = oci_error($stmt);
+    die("error while creating in beratung"  . mysqli_error($conn));
   } else {
     header("Location: ?");
   }
@@ -61,27 +61,21 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 
 //update beratung
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM beratung WHERE KUNDENUMMER = " . $_GET['KUNDENUMMER'] . " AND REISEID = " . $_GET['REISEID'] . " AND STEUERNUMMER = " . $_GET['STEUERNUMMER'];
- // $stmt = oci_parse($conn, $getRowForUpdate);
- // oci_execute($stmt);
- // $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
-    
+  $getRowForUpdate = "SELECT * FROM Beratung WHERE KUNDENUMMER = " . $_GET['KUNDENUMMER'] . " AND REISEID = " . $_GET['REISEID'] . " AND STEUERNUMMER = " . $_GET['STEUERNUMMER'];
+
     $stmt = mysqli_query($conn, $getRowForUpdate);
     $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
-    
+
   if (!empty($_POST)) {
-    $updateSql = "UPDATE beratung SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", REISEID = " . $_POST['REISEID'] . ", STEUERNUMMER = " . $_POST['STEUERNUMMER'] . " WHERE KUNDENUMMER = " . $_GET['KUNDENUMMER'] . " AND REISEID = " . $_GET['REISEID'] . " AND STEUERNUMMER = " . $_GET['STEUERNUMMER'];
+    $updateSql = "UPDATE Beratung SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", REISEID = " . $_POST['REISEID'] . ", STEUERNUMMER = " . $_POST['STEUERNUMMER'] . " WHERE KUNDENUMMER = " . $_GET['KUNDENUMMER'] . " AND REISEID = " . $_GET['REISEID'] . " AND STEUERNUMMER = " . $_GET['STEUERNUMMER'];
 
-   // $stmt = @oci_parse($conn, $updateSql);
-   // $result = @oci_execute($stmt);
+  $result = mysqli_query($conn, $updateSql);
 
-  $result = mysqli_query($conn, $updateHotelSql);
-  
       if (!$result) {
-          die("error while updating hotel");
+        die("error while updating beratung " . mysqli_error($conn));
       }
       else{
-      header("Location: ?");
+        header("Location: ?");
     }
   }
 }
@@ -89,27 +83,18 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
 //add order for beautify
 $searchSql .= " ORDER BY STEUERNUMMER, KUNDENUMMER, REISEID";
 
- 
-//parse and execute sql statement
-//$stmt = oci_parse($conn, $searchSql);
-//$result = oci_execute($stmt);
-    
-    //execute sql statement
-    $result = mysqli_query($conn,searchSql);
-    
+  //execute sql statement
+  $result = mysqli_query($conn,$searchSql);
 
 //additional result for fetching kunde for select dropdown
-$stmt2 = mysqli_query($conn, 'select KUNDENUMMER from kunde');
-$result2 = mysqli_query($stmt2);
+$result2 = mysqli_query($conn, 'select KUNDENUMMER from Kunde');
 
 //additional result for fetching reise for select dropdown
-$stmt3 = mysqli_query($conn, 'select ID, NAME from reise');
-$result3 = mysqli_query($stmt3);
+$result3 = mysqli_query($conn, 'select ID, NAME from Reise');
 
 //additional result for fetching mitarbeiter for select dropdown
-$stmt4 = mysqli_query($conn, 'select STEUERNUMMER from mitarbeiter');
-$result4 = mysqli_query($stmt4);
-/*
+$result4 = mysqli_query($conn, 'select STEUERNUMMER from Mitarbeiter');
+
 if (!$result) {
   $error = mysqli_query($stmt);
 }
@@ -125,8 +110,7 @@ if (!$result3) {
 if (!$result4) {
   $error = mysqli_query($stmt4);
 }
- 
- */
+
 ?>
 
 <html>
@@ -213,9 +197,9 @@ if (!$result4) {
                     <th class="th1" width="300">STEUERNUMMER</th>
                     <th class="th1" width="300">KUNDE</th>
                     <th class="th1" width="300">REISE</th>
-                    
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -271,15 +255,15 @@ if (!$result4) {
             </form>
           </div>
         </div>
-        
 
-        
+
+
         <?php  oci_free_statement($stmt); ?>
 
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-            
+
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&KUNDENUMMER=' . $_GET['KUNDENUMMER'] . '&REISEID=' . $_GET['REISEID'] . '&STEUERNUMMER=' . $_GET['STEUERNUMMER'] : 'create'?>" method='post'>
 
@@ -329,7 +313,7 @@ if (!$result4) {
         </div>
 
         <?php  oci_free_statement($stmt2); ?>
-        
+
       </div>
     </div>
 </body>
