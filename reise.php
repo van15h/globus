@@ -14,7 +14,7 @@ include __DIR__ . '/../src/config.php';
     
     //preparing sql query for reise search
     $conditions = array();
-    $searchSql = "SELECT * FROM reise";
+    $searchSql = "SELECT * FROM Reise";
     
     //search reise
     if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -46,7 +46,7 @@ include __DIR__ . '/../src/config.php';
     
     //delete reise
     if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-        $deleteSql = "DELETE FROM reise WHERE ID = " . $_GET['ID'];
+        $deleteSql = "DELETE FROM Reise WHERE ID = " . $_GET['ID'];
         
       //  $stmt = @oci_parse($conn, $deleteSql);
      // $result = @oci_execute($stmt);
@@ -61,13 +61,12 @@ include __DIR__ . '/../src/config.php';
     }
     //create reise
     if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-        $createSql = "INSERT INTO reise (NAME, EINREISEDATUM, REISEDAUER, PREIS) VALUES('" . $_POST['NAME'] . "', '" . $_POST['EINREISEDATUM'] . "', '" . $_POST['REISEDAUER'] . "', " . $_POST['PREIS'] . ")";
+        $createSql = "INSERT INTO Reise (NAME, EINREISEDATUM, REISEDAUER, PREIS) VALUES('" . $_POST['NAME'] . "', '" . $_POST['EINREISEDATUM'] . "', '" . $_POST['REISEDAUER'] . "', " . $_POST['PREIS'] . ")";
         
-        $stmt = @oci_parse($conn, $createSql);
-        $result = @oci_execute($stmt);
+       $result = mysqli_query($conn, $createSql);
         
         if (!$result) {
-            $error = oci_error($stmt);
+            die("error while creating reise "  . mysqli_error($conn));
         } else {
             header("Location: ?");
         }
@@ -75,19 +74,17 @@ include __DIR__ . '/../src/config.php';
     
     //update reise
     if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-        $getRowForUpdate = "SELECT * FROM reise WHERE ID = '" . $_GET['ID'] . "'";
-        $stmt = oci_parse($conn, $getRowForUpdate);
-        oci_execute($stmt);
-        $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
+        $getRowForUpdate = "SELECT * FROM Reise WHERE ID = '" . $_GET['ID'] . "'";
+        $stmt = mysqli_query($conn, $getRowForUpdate);
+        $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
         
         if (!empty($_POST)) {
-            $updateSql = "UPDATE reise SET NAME = '" . $_POST['NAME'] . "', EINREISEDATUM = '" . $_POST['EINREISEDATUM'] . "', REISEDAUER = '" . $_POST['REISEDAUER'] . "', PREIS = " . $_POST['PREIS'] . " WHERE ID = '" . $_GET['ID'] . "'";
+            $updateSql = "UPDATE Reise SET NAME = '" . $_POST['NAME'] . "', EINREISEDATUM = '" . $_POST['EINREISEDATUM'] . "', REISEDAUER = '" . $_POST['REISEDAUER'] . "', PREIS = " . $_POST['PREIS'] . " WHERE ID = '" . $_GET['ID'] . "'";
             
-            $stmt = @oci_parse($conn, $updateSql);
-            $result = @oci_execute($stmt);
+            $result = mysqli_query($conn, $updateSql);
             
             if (!$result) {
-                $error = oci_error($stmt);
+                die("error while updating reise" . mysqli_error($conn));
             } else {
                 header("Location: ?");
             }
@@ -101,12 +98,7 @@ include __DIR__ . '/../src/config.php';
     //parse and execute sql statement
     $result = mysqli_query($conn,$searchSql);
    
-    //$stmt = oci_parse($conn, $searchSql);
-    //$result = oci_execute($stmt);
-    
-   // if (!$result) {
-   //     $error = oci_error($stmt);
-   // }
+   
     ?>
 
 <html>
@@ -221,8 +213,8 @@ include __DIR__ . '/../src/config.php';
         <td class="th1"><?= $row['einreisedatum'] ?></td>
         <td class="th1"><?= $row['reisedauer'] ?></td>
         <td class="th1"><?= $row['preis'] ?></td>
-        <td><a href="?action=update&ID=<?= $row["ID"] ?>">update</a></td>
-        <td><a href="?action=delete&ID=<?= $row["ID"] ?>">delete</a></td>
+        <td><a href="?action=update&ID=<?= $row["id"] ?>">update</a></td>
+        <td><a href="?action=delete&ID=<?= $row["id"] ?>">delete</a></td>
     </tr>
     <?php endwhile; ?>
 
@@ -235,7 +227,7 @@ include __DIR__ . '/../src/config.php';
 
 
 <?php
-    //oci_free_statement($stmt);
+    
     mysqli_free_result($result);
     mysqli_close($conn);
     ?>
