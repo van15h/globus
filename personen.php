@@ -1,6 +1,4 @@
-
-<?php
-    
+<?php    
     include __DIR__ . '/../src/config.php';
     
     //connection to db
@@ -14,7 +12,7 @@
 
 //preparing sql query for person search
 $conditions = array();
-$searchSql = "SELECT * FROM person";
+$searchSql = "SELECT * FROM Person";
 
 //search person
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -27,8 +25,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
     $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['NAME']) . "%'";
   }
 
-  if (!empty($_GET['SVNUMMER'])) {
-    $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['NAME']) . "%'";
+  if (!empty($_GET['SVNummer'])) {
+    $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['SVNummer']) . "%'";
   }
 
   if (!empty($_GET['GEBURTSDATUM'])) {
@@ -58,15 +56,13 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 
 //delete person
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteSql = "DELETE FROM person WHERE ID = " . $_GET['ID'];
-    
+  $deleteSql = "DELETE FROM Person WHERE ID = " . $_GET['ID'];
   //$stmt = @oci_parse($conn, $deleteSql);
   //$result = @oci_execute($stmt);
-
     $result = mysqli_query($conn,$deleteSql);
     
   if (!$result) {
-      die("error while deleting person");
+       die("error while deleting id=" . $_GET['ID']);
            } else {
     header("Location: ?");
   }
@@ -74,37 +70,34 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
 //create person
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createSql = "INSERT INTO person (ID, NAME, SVNUMMER, GEBURTSDATUM, EMAIL, PLZ, ORT, STRASSE) VALUES(" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['SVNUMMER'] . "', '" . $_POST['GEBURTSDATUM'] . "', '" . $_POST['EMAIL'] . "', '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "')";
+  $createSql = "INSERT INTO Person (id, name, SVNummer, geburtsdatum, email, plz, ort, strasse) VALUES(" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['SVNummer'] . "', '" . $_POST['GEBURTSDATUM'] . "', '" . $_POST['EMAIL'] . "', '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "')";
 
 //$stmt = @oci_parse($conn, $createSql);
 //  $result = @oci_execute($stmt);
 
-    $result = mysqli_query($conn, $createSql);
-
+    $result = mysqli_query($conn,$createSql);
   if (!$result) {
-     die("error while creating person");
+     die("error while creating person". mysqli_error($conn));
   } else {
     header("Location: ?");
   }
+  
 }
 
 //update person
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM person WHERE ID = '" . $_GET['ID'] . "'";
-//$stmt = oci_parse($conn, $getRowForUpdate);
+  $getRowForUpdate = "SELECT * FROM Person WHERE ID = '" . $_GET['ID'] . "'";
+  $stmt = mysqli_query($conn, $getRowForUpdate);
 //  oci_execute($stmt);
-//  $rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
-    
-    $stmt = mysqli_query($conn, $getRowForUpdate);
     $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
-    $updateSql = "UPDATE person SET NAME = '" . $_POST['NAME'] . "', SVNUMMER = '" . $_POST['SVNUMMER'] . "', GEBURTSDATUM = '" . $_POST['GEBURTSDATUM'] . "', EMAIL = '" . $_POST['EMAIL'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "' WHERE ID = '" . $_GET['ID'] . "'";
+    $updateSql = "UPDATE Person SET NAME = '" . $_POST['NAME'] . "', SVNummer = '" . $_POST['SVNummer'] . "', GEBURTSDATUM = '" . $_POST['GEBURTSDATUM'] . "', EMAIL = '" . $_POST['EMAIL'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
    // $stmt = @oci_parse($conn, $updateSql);
    // $result = @oci_execute($stmt);
       
-       $result = mysqli_query($conn,  $updateSql);
+       $result = mysqli_query($conn, $updateSql);
 
     if (!$result) {
         die("error while updating person");
@@ -213,7 +206,7 @@ $searchSql .= " ORDER BY ID";
                   <tr>
                     <th class="th1" width="50">ID</th>
                     <th class="th1" width="300">NAME</th>
-                    <th class="th1" width="300">SVNUMMER</th>
+                    <th class="th1" width="300">SVNummer</th>
                     <th class="th1" width="300">GEBURTSDATUM</th>
                     <th class="th1" width="300">EMAIL</th>
                     <th width="200">PLZ</th>
@@ -228,7 +221,7 @@ $searchSql .= " ORDER BY ID";
                   <tr>
                     <td><input name='ID' value='<?= @$_GET['ID'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='NAME' value='<?= @$_GET['NAME'] ?: '' ?>' style="width:100%" /></td>
-                    <td><input name='SVNUMMER' value='<?= @$_GET['SVNUMMER'] ?: '' ?>' style="width:100%" /></td>
+                    <td><input name='SVNummer' value='<?= @$_GET['SVNummer'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='GEBURTSDATUM' value='<?= @$_GET['GEBURTSDATUM'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='EMAIL' value='<?= @$_GET['EMAIL'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='PLZ' value='<?= @$_GET['PLZ'] ?: '' ?>' style="width:100%" /></td>
@@ -243,14 +236,14 @@ $searchSql .= " ORDER BY ID";
                   <tr>
                     <td class="th1"><?= $row['id'] ?></td>
                     <td><?= $row['name'] ?></td>
-                    <td><?= $row['svnummer'] ?></td>
+                    <td><?= $row['SVNummer'] ?></td>
                     <td><?= $row['geburtsdatum'] ?></td>
                     <td><?= $row['email'] ?></td>
                     <td><?= $row['plz'] ?></td>
                     <td><?= $row['ort'] ?></td>
                     <td><?= $row['strasse'] ?></td>
-                    <td><a href="?action=update&ID=<?= $row["ID"] ?>">update</a></td>
-                    <td><a href="?action=delete&ID=<?= $row["ID"] ?>">delete</a></td>
+                    <td><a href="?action=update&ID=<?= $row["id"] ?>">update</a></td>
+                    <td><a href="?action=delete&ID=<?= $row["id"] ?>">delete</a></td>
                   </tr>
                   <?php endwhile; ?>
 
@@ -279,35 +272,35 @@ $searchSql .= " ORDER BY ID";
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['ID'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
+                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['NAME'] : ''?>" />
+                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['name'] : ''?>" />
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="inputEmail3" class="col-sm-2 control-label">svnummer</label>
+                <label for="inputEmail3" class="col-sm-2 control-label">SVNummer</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='SVNUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['SVNUMMER'] : ''?>" />
+                  <input class="form-control" name='SVNummer' value="<?=isset($rowForUpdate) ? $rowForUpdate['SVNummer'] : ''?>" />
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">geburtsdatum</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='GEBURTSDATUM' value="<?=isset($rowForUpdate) ? $rowForUpdate['GEBURTSDATUM'] : ''?>" />
+                  <input class="form-control" name='GEBURTSDATUM' value="<?=isset($rowForUpdate) ? $rowForUpdate['geburtsdatum'] : ''?>" />
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">email</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='EMAIL' value="<?=isset($rowForUpdate) ? $rowForUpdate['EMAIL'] : ''?>" />
+                  <input class="form-control" name='EMAIL' value="<?=isset($rowForUpdate) ? $rowForUpdate['email'] : ''?>" />
                 </div>
               </div>
 
@@ -315,7 +308,7 @@ $searchSql .= " ORDER BY ID";
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">plz</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['PLZ'] : ''?>" />
+                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['plz'] : ''?>" />
                 </div>
               </div>
 
@@ -323,7 +316,7 @@ $searchSql .= " ORDER BY ID";
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">ort</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ORT'] : ''?>" />
+                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ort'] : ''?>" />
                 </div>
               </div>
 
@@ -331,7 +324,7 @@ $searchSql .= " ORDER BY ID";
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">strasse</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['STRASSE'] : ''?>" />
+                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['strasse'] : ''?>" />
                 </div>
               </div>
 
