@@ -1,38 +1,37 @@
-
 <?php
+ 
     include __DIR__ . '/../src/config.php';
     
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
     
-    // Check connection
+    // Check connection established
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
 
-
-//preparing sql query for kunde search
+//preparing sql query for mitarbeiter search
 $conditions = array();
-$searchSql = "SELECT * FROM kunde";
+$searchSql = "SELECT * FROM mitarbeiter";
 
-//search kunde
+//search mitarbeiter
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
   //prepare conditions for query if they was passed
   if (!empty($_GET['PERSONID'])) {
     $conditions[] = "PERSONID = " . $_GET['PERSONID'];
   }
 
-  if (!empty($_GET['KUNDENUMMER'])) {
-    $conditions[] = "KUNDENUMMER = " . $_GET['KUNDENUMMER'];
+  if (!empty($_GET['STEUERNUMMER'])) {
+    $conditions[] = "STEUERNUMMER = " . $_GET['STEUERNUMMER'];
   }
 
-  if (!empty($_GET['TELEFONNUMMER'])) {
-    $conditions[] = "TELEFONNUMMER = " . $_GET['TELEFONNUMMER'];
+  if (!empty($_GET['GEHALT'])) {
+    $conditions[] = "GEHALT = " . $_GET['GEHALT'];
   }
 
-  if (!empty($_GET['KONTODATEN'])) {
-    $conditions[] = "UPPER(KONTODATEN) like '%" . strtoupper($_GET['KONTODATEN']) . "%'";
+  if (!empty($_GET['BESCHAEFTIGUNGRBID'])) {
+    $conditions[] = "UPPER(BESCHAEFTIGUNGRBID) like '%" . strtoupper($_GET['BESCHAEFTIGUNGRBID']) . "%'";
   }
 
   if (!empty($conditions)) {
@@ -40,57 +39,47 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
   }
 }
 
-//delete kunde
+//delete mitarbeiter
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteSql = "DELETE FROM kunde WHERE PERSONID = " . $_GET['PERSONID'];
+  $deleteSql = "DELETE FROM mitarbeiter WHERE PERSONID = " . $_GET['PERSONID'];
 
-  //$stmt = @oci_parse($conn, $deleteSql);
-  //$result = @oci_execute($stmt);
+ $result = mysqli_query($conn,$deleteSql);
 
-    $result = mysqli_query($conn,$deleteSql);
-    
   if (!$result) {
-      die("error while deleting kunde");
+     die("error while deleting mitarbeiter");
+      
   } else {
     header("Location: ?");
   }
 }
 
-//create kunde
+//create mitarbeiter
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createSql = "INSERT INTO kunde (PERSONID, KUNDENUMMER, TELEFONNUMMER, KONTODATEN) VALUES(" . $_POST['PERSONID'] . ", " . $_POST['KUNDENUMMER'] . ", " . $_POST['TELEFONNUMMER'] . ", '" . $_POST['KONTODATEN'] . "')";
-
-  //$stmt = @oci_parse($conn, $createSql);
-  //$result = @oci_execute($stmt);
+  $createSql = "INSERT INTO mitarbeiter (PERSONID, STEUERNUMMER, GEHALT, BESCHAEFTIGUNGRBID) VALUES(" . $_POST['PERSONID'] . ", " . $_POST['STEUERNUMMER'] . ", " . $_POST['GEHALT'] . ", '" . $_POST['BESCHAEFTIGUNGRBID'] . "')";
 
   $result = mysqli_query($conn, $createSql);
+
   if (!$result) {
-    die("error while creating kunde");
+    die("error while creating mitarbeiter "  . mysqli_error($conn));
   } else {
     header("Location: ?");
   }
 }
 
-//update kunde
+//update mitarbeiter
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM kunde WHERE PERSONID = " . $_GET['PERSONID'];
-  //$stmt = oci_parse($conn, $getRowForUpdate);
-  //oci_execute($stmt);
-  //$rowForUpdate = oci_fetch_array($stmt, OCI_ASSOC);
+  $getRowForUpdate = "SELECT * FROM mitarbeiter WHERE PERSONID = " . $_GET['PERSONID'];
+  $stmt = mysqli_query($conn, $getRowForUpdate);
+  $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
-    $stmt = mysqli_query($conn, $getRowForUpdate);
-    $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
-    
+
   if (!empty($_POST)) {
-    $updateSql = "UPDATE kunde SET KUNDENUMMER = " . $_POST['KUNDENUMMER'] . ", TELEFONNUMMER = " . $_POST['TELEFONNUMMER'] . ", KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
+    $updateSql = "UPDATE mitarbeiter SET STEUERNUMMER = " . $_POST['STEUERNUMMER'] . ", GEHALT = " . $_POST['GEHALT'] . ", BESCHAEFTIGUNGRBID = '" . $_POST['BESCHAEFTIGUNGRBID'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
 
-   // $stmt = @oci_parse($conn, $updateSql);
-   // $result = @oci_execute($stmt);
+      $result = mysqli_query($conn, $updateSql);
 
-   $result = mysqli_query($conn, $updateSql);
     if (!$result) {
-        die("error while updating kunde");
-
+      die("error while updating mitarbeiter" . mysqli_error($conn));
     } else {
       header("Location: ?");
     }
@@ -102,25 +91,24 @@ $searchSql .= " ORDER BY PERSONID";
 
 
 //parse and execute sql statement
-//$stmt = oci_parse($conn, $searchSql);
-//$result = oci_execute($stmt);
+$result = mysqli_query($conn,$searchSql);
 
-    $result = mysqli_query($conn,$searchSql);
-    
 //additional result for fetching persons for select dropdown
-//$stmt2 = oci_parse($conn, 'select ID, NAME from person');
-//$result2 = oci_execute($stmt2);
+$result2 = mysqli_query($conn, 'select ID, NAME from person');
 
-      $result2 = mysqli_query($conn,'select ID, NAME from person');
-    
-/*if (!$result) {
-die("error while search kunde");
+$result3 = mysqli_query($conn, 'select ID, NAME from reisebuero');
+
+if (!$result) {
+  die("error while adding mitarbeiter" . mysqli_error($conn));
 }
 
 if (!$result2) {
-    die("error while adding kunde");
+  die("error while adding person" . mysqli_error($conn));
+}
 
-}*/
+if (!$result3) {
+ die("error while adding reisebuero" . mysqli_error($conn));
+}
 ?>
 
 <html>
@@ -145,10 +133,10 @@ if (!$result2) {
               <li>
                 <a href="hotel.php">Hotel</a>
               </li>
-              <li class="active">
+              <li>
                 <a href="kunde.php">Kunde</a>
               </li>
-              <li>
+              <li class="active">
                 <a href="mitarbeiter.php">Mitarbeiter</a>
               </li>
               <li>
@@ -206,9 +194,9 @@ if (!$result2) {
                   <tr>
                     <th class="th1" width="50">PERSONID</th>
                     <th class="th1" width="50">PERSON</th>
-                    <th class="th1" width="300">KUNDENUMMER</th>
-                    <th class="th1" width="300">TELEFONNUMMER</th>
-                    <th class="th1" width="300">KONTODATEN</th>
+                    <th class="th1" width="300">STEUERNUMMER</th>
+                    <th class="th1" width="300">GEHALT</th>
+                    <th class="th1" width="300">BESCHAEFTIGUNGRBID</th>
                     <th width="50">update</th> 
                     <th width="50">delete</th>      
                   </tr>
@@ -218,9 +206,9 @@ if (!$result2) {
                   <tr>
                     <td><input name='PERSONID' value='<?= @$_GET['PERSONID'] ?: '' ?>' style="width:100%" /></td>
                     <td></td>
-                    <td><input name='KUNDENUMMER' value='<?= @$_GET['KUNDENUMMER'] ?: '' ?>' style="width:100%" /></td>
-                    <td><input name='TELEFONNUMMER' value='<?= @$_GET['TELEFONNUMMER'] ?: '' ?>' style="width:100%" /></td>
-                    <td><input name='KONTODATEN' value='<?= @$_GET['KONTODATEN'] ?: '' ?>' style="width:100%" /></td>
+                    <td><input name='STEUERNUMMER' value='<?= @$_GET['STEUERNUMMER'] ?: '' ?>' style="width:100%" /></td>
+                    <td><input name='GEHALT' value='<?= @$_GET['GEHALT'] ?: '' ?>' style="width:100%" /></td>
+                    <td><input name='BESCHAEFTIGUNGRBID' value='<?= @$_GET['BESCHAEFTIGUNGRBID'] ?: '' ?>' style="width:100%" /></td>
                     <td></td>
                     <td></td>
                   </tr>
@@ -228,23 +216,30 @@ if (!$result2) {
                   <!-- вывод строк с информацией из базы -->
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
                     <tr>
-                      <td class="th1"><?= $row['personid'] ?></td>
+                      <td class="th1"><?= $row['PERSONID'] ?></td>
                       <td>
                         <?php
-                          while($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
-                            echo $row2['id'] === $row['personid'] ? $row2['name'] : '';
+                          while($row2 = mysqli_fetch_array($result1, MYSQLI_ASSOC)) {
+                            echo $row2['ID'] === $row['PERSONID'] ? $row2['NAME'] : '';
                           }
 
                           //rewind cursor
-                         // oci_execute($stmt2);
-                           
-                            mysqli_free_result($result2);
+                            mysqli_free_result($result1);
                             mysqli_close($conn);
                         ?>
                       </td>
-                      <td><?= $row['kundenummer'] ?></td>
-                      <td><?= $row['telefonnummer'] ?></td>
-                      <td><?= $row['kontodaten'] ?></td>
+                      <td><?= $row['STEUERNUMMER'] ?></td>
+                      <td><?= $row['GEHALT'] ?></td>
+                      <td>
+                        <?php
+                          while($row4 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
+                            echo $row4['ID'] === $row['BESCHAEFTIGUNGRBID'] ? $row4['NAME'] : '';
+                          }
+
+                          //rewind cursor
+                            mysqli_free_result($result2);
+                            mysqli_close($conn);                        ?>
+                      </td>
                       <td><a href="?action=update&PERSONID=<?= $row["PERSONID"] ?>">update</a></td>
                       <td><a href="?action=delete&PERSONID=<?= $row["PERSONID"] ?>">delete</a></td>
                     </tr>
@@ -258,12 +253,10 @@ if (!$result2) {
         
 
         
-        <?php
-            //oci_free_statement($stmt);
-            mysqli_free_result($result);
-            mysqli_close($conn);
-            
-            ?>
+    <?php
+        mysqli_free_result($result);
+        mysqli_close($conn);
+    ?>
 
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
@@ -275,7 +268,7 @@ if (!$result2) {
                 <label class="col-sm-3 control-label">PERSON</label>
                 <div class="col-sm-9">
                   <select class="form-control" name='PERSONID' <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>>
-                    <?php while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
+                    <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
                       <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['PERSONID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
                     <?php endwhile; ?>
                   </select>
@@ -283,23 +276,27 @@ if (!$result2) {
               </div>
 
               <div class="form-group">
-                <label class="col-sm-3 control-label">KUNDENUMMER</label>
+                <label class="col-sm-3 control-label">STEUERNUMMER</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name='KUNDENUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['KUNDENUMMER'] : ''?>" />
+                  <input class="form-control" name='STEUERNUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['STEUERNUMMER'] : ''?>" />
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-sm-3 control-label">TELEFONNUMMER</label>
+                <label class="col-sm-3 control-label">GEHALT</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name='TELEFONNUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['TELEFONNUMMER'] : ''?>" />
+                  <input class="form-control" name='GEHALT' value="<?=isset($rowForUpdate) ? $rowForUpdate['GEHALT'] : ''?>" />
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-sm-3 control-label">KONTODATEN</label>
+                <label class="col-sm-3 control-label">BESCHAEFTIGUNGRBID</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name='KONTODATEN' value="<?=isset($rowForUpdate) ? $rowForUpdate['KONTODATEN'] : ''?>" />
+                  <select class="form-control" name='BESCHAEFTIGUNGRBID'>
+                    <?php while($row = mysqli_fetch_array($result1, MYSQLI_ASSOC)): ?>
+                      <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['BESCHAEFTIGUNGRBID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
+                    <?php endwhile; ?>
+                  </select>
                 </div>
               </div>
 
@@ -316,9 +313,11 @@ if (!$result2) {
         </div>
 
         <?php
-            //oci_free_statement($stmt2);
-            mysqli_free_result($result2);
+            mysqli_free_result($result1);
             mysqli_close($conn);
+            mysqli_free_result($result);
+            mysqli_close($conn);
+            
             
             ?>
         
