@@ -1,4 +1,3 @@
-
 <?php
 //connection to db
 include __DIR__ . '/../src/config.php';
@@ -11,10 +10,9 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-
 //preparing sql query for zimmer search
 $conditions = array();
-$searchSql = "SELECT * FROM Zimmer";
+$searchSql = "SELECT Zimmer.id  AS id, Zimmer.variation AS variation, Zimmer.nummer AS nummer, Hotel.name AS name FROM Zimmer INNER JOIN Hotel ON Hotel.id = Zimmer.hotelid";
 
 //search zimmer
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -31,8 +29,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
     $conditions[] = "UPPER(VARIATION) like '%" . strtoupper($_GET['VARIATION']) . "%'";
   }
 
-  if (!empty($_GET['HOTELID'])) {
-    $conditions[] = "HOTELID = " . $_GET['HOTELID'];
+  if (!empty($_GET['HOTEL'])) {
+    $conditions[] = "name = '" . $_GET['HOTEL'] . "'";
   }
 
   if (!empty($conditions)) {
@@ -68,14 +66,14 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 
 //update zimmer
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM zimmer WHERE ID = " . $_GET['ID'];
+  $getRowForUpdate = "SELECT * FROM Zimmer WHERE ID = " . $_GET['ID'];
   $stmt = mysqli_query($conn, $getRowForUpdate);
-  oci_execute($stmt);
+  //oci_execute($stmt);
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
-    $updateSql = "UPDATE zimmer SET NUMMER = " . $_POST['NUMMER'] . ", VARIATION = '" . $_POST['VARIATION'] . "', HOTELID = " . $_POST['HOTELID'] . " WHERE ID = " . $_GET['ID'];
-	
+    $updateSql = "UPDATE Zimmer SET NUMMER = " . $_POST['NUMMER'] . ", VARIATION = '" . $_POST['VARIATION'] . "', HOTELID = " . $_POST['HOTELID'] . " WHERE ID = " . $_GET['ID'];
+
     $result = mysqli_query($conn, $updateSql);
 
     if (!$result) {
@@ -89,15 +87,14 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
 //add order for beautify
 $searchSql .= " ORDER BY ID";
 
-
 //parse and execute sql statement
 
 $result = mysqli_query($conn, $searchSql);
 
-//additional result for fetching persons for select dropdown
-$result2 = mysqli_query($conn, 'select ID, NAME from Hotel');
+//additional result for fetching hotels for select dropdown
+$result2 = mysqli_query($conn, 'select id, name from Hotel');
 
-/**
+/*
 if (!$result) {
   $error = oci_error($stmt);
 }
@@ -105,7 +102,7 @@ if (!$result) {
 if (!$result2) {
   $error = oci_error($stmt2);
 }
-**/
+*/
 ?>
 
 <html>
@@ -143,9 +140,6 @@ if (!$result2) {
                 <a href="platzierung.php">Platzierung</a>
               </li>
               <li>
-                <a href="procedure.php">Procedure</a>
-              </li>
-              <li>
                 <a href="reise.php">Reise</a>
               </li>
               <li>
@@ -158,92 +152,69 @@ if (!$result2) {
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
+        <!-- navigation -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Zimmer</li>
         </ol>
 
-        <!-- ошибки если есть -->
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
-
-        <!-- основная панель с таблицей -->
+        <!-- main panel -->
         <div class="panel panel-default">
-          <div class="panel-body">
+          <div class="panel-body" style="height: 500px; overflow-y: auto;">
 
-            <!-- основная панель с таблицей -->
+            <!-- form with table -->
             <form method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
+              <!-- refresh -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
+              <!-- table -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
                     <th class="th1" width="50">ID</th>
-                    <th class="th1" width="300">HOTEL</th>
-                    <th class="th1" width="300">NUMMER</th>
-                    <th class="th1" width="300">VARIATION</th>
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th class="th1" width="300">Hotel</th>
+                    <th class="th1" width="300">Nummer</th>
+                    <th class="th1" width="300">Variation</th>
+                    <th width="50">Update</th>
+                    <th width="50">Delete</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
+                  <!-- search -->
                   <tr>
                     <td><input name='ID' value='<?= @$_GET['id'] ?: '' ?>' style="width:100%" /></td>
-                    <td></td>
+                    <td><input name='HOTEL' value='<?= @$_GET['name'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='NUMMER' value='<?= @$_GET['nummer'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='VARIATION' value='<?= @$_GET['variation'] ?: '' ?>' style="width:100%" /></td>
                     <td></td>
                     <td></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
-                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
+                  <!-- parse query with results -->
+                  <?php
+                  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) { ?>
                     <tr>
                       <td class="th1"><?= $row['id'] ?></td>
-                      <td>
-                        <?php
-                          while($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
-                            echo $row2['id'] === $row['hotelid'] ? $row2['name'] : '';
-                          }
-
-                          //rewind cursor
-						   mysqli_query($conn, 'select NAME from Hotel');
-                      
-                        ?>
-                      </td>
+                      <td><?= $row['name']; ?></td>
                       <td><?= $row['nummer'] ?></td>
                       <td><?= $row['variation'] ?></td>
-                      <td><a href="?action=update&ID=<?= $row["id"] ?>">update</a></td>
-                      <td><a href="?action=delete&ID=<?= $row["id"] ?>">delete</a></td>
+                      <td><a href="?action=update&ID=<?= $row["id"] ?>">Update</a></td>
+                      <td><a href="?action=delete&ID=<?= $row["id"] ?>">Delete</a></td>
                     </tr>
-                  <?php endwhile; ?>
+                        <?php } ?>
 
                 </tbody>
               </table>
             </form>
           </div>
         </div>
-        
-
-        
-
 
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-            
+
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
@@ -296,7 +267,7 @@ if (!$result2) {
         </div>
 
 
-        
+
       </div>
     </div>
 </body>
