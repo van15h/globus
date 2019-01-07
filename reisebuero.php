@@ -1,4 +1,3 @@
-
 <?php
 //connection to db
 include __DIR__ . '/../src/config.php';
@@ -50,13 +49,13 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 
 //delete reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteSql = "DELETE FROM reisebuero WHERE ID = " . $_GET['ID'];
+  $deleteSql = "DELETE FROM Reisebuero WHERE ID = " . $_GET['ID'];
 
-  $stmt = @oci_parse($conn, $deleteSql);
-  $result = @oci_execute($stmt);
+ 
+  $result =mysqli_query($conn, $deleteSql);
 
   if (!$result) {
-    $error = oci_error($stmt);
+     die("error while deleting id=" . $_GET['ID']);
   } else {
     header("Location: ?");
   }
@@ -67,7 +66,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $createSql = "INSERT INTO Reisebuero (ID, NAME, PLZ, ORT, STRASSE, KONTODATEN) VALUES(" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "', '" . $_POST['KONTODATEN'] . "')";
 
   
-  $result = @mysqli_query($conn, $createSql);
+  $result = mysqli_query($conn, $createSql);
 
   if (!$result) {
      die("error while creating Reisebuero"  . mysqli_error($conn));
@@ -79,13 +78,13 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 
 //update reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM reisebuero WHERE ID = '" . $_GET['ID'] . "'";
+  $getRowForUpdate = "SELECT * FROM Reisebuero WHERE ID = '" . $_GET['ID'] . "'";
   $stmt = mysqli_query($conn, $getRowForUpdate);
-  oci_execute($stmt);
+  
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
-    $updateSql = "UPDATE reisebuero SET NAME = '" . $_POST['NAME'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "', KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE ID = '" . $_GET['ID'] . "'";
+    $updateSql = "UPDATE Reisebuero SET NAME = '" . $_POST['NAME'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "', KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
     
     $result = mysqli_query($conn, $updateSql);
@@ -224,8 +223,8 @@ if (!$result) {
                     <td><?= $row['ort'] ?></td>
                     <td><?= $row['strasse'] ?></td>
                     <td><?= $row['kontodaten'] ?></td>
-                    <td><a href="?action=update&ID=<?= $row["ID"] ?>">update</a></td>
-                    <td><a href="?action=delete&ID=<?= $row["ID"] ?>">delete</a></td>
+                    <td><a href="?action=update&ID=<?= $row["id"] ?>">update</a></td>
+                    <td><a href="?action=delete&ID=<?= $row["id"] ?>">delete</a></td>
                   </tr>
                   <?php endwhile; ?>
 
@@ -246,14 +245,14 @@ if (!$result) {
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['ID'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
+                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['NAME'] : ''?>" />
+                  <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['name'] : ''?>" />
                 </div>
               </div>
 
@@ -261,7 +260,7 @@ if (!$result) {
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">plz</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['PLZ'] : ''?>" />
+                  <input class="form-control" name='PLZ' value="<?=isset($rowForUpdate) ? $rowForUpdate['plz'] : ''?>" />
                 </div>
               </div>
 
@@ -269,7 +268,7 @@ if (!$result) {
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">ort</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ORT'] : ''?>" />
+                  <input class="form-control" name='ORT' value="<?=isset($rowForUpdate) ? $rowForUpdate['ort'] : ''?>" />
                 </div>
               </div>
 
@@ -277,7 +276,7 @@ if (!$result) {
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">strasse</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['STRASSE'] : ''?>" />
+                  <input class="form-control" name='STRASSE' value="<?=isset($rowForUpdate) ? $rowForUpdate['strasse'] : ''?>" />
                 </div>
               </div>
 
@@ -285,7 +284,7 @@ if (!$result) {
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">kontodaten</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='KONTODATEN' value="<?=isset($rowForUpdate) ? $rowForUpdate['KONTODATEN'] : ''?>" />
+                  <input class="form-control" name='KONTODATEN' value="<?=isset($rowForUpdate) ? $rowForUpdate['kontodaten'] : ''?>" />
                 </div>
               </div>
 
