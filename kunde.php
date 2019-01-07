@@ -111,16 +111,16 @@ $searchSql .= " ORDER BY PERSONID";
 //$stmt2 = oci_parse($conn, 'select ID, NAME from person');
 //$result2 = oci_execute($stmt2);
 
-      $result = mysqli_query($conn,'select ID, NAME from person');
+      $result2 = mysqli_query($conn,'select ID, NAME from person');
     
-if (!$result) {
-    die("error while adding kunde");
+/*if (!$result) {
+die("error while search kunde");
 }
 
 if (!$result2) {
     die("error while adding kunde");
 
-}
+}*/
 ?>
 
 <html>
