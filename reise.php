@@ -1,6 +1,5 @@
-
 <?php
-    
+
 include __DIR__ . '/../src/config.php';
 
     //connection to db
@@ -10,47 +9,47 @@ include __DIR__ . '/../src/config.php';
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
-    
-    
+
+
     //preparing sql query for reise search
     $conditions = array();
     $searchSql = "SELECT * FROM Reise";
-    
+
     //search reise
     if (!empty($_GET['action']) && $_GET['action'] == 'search') {
         //prepare conditions for query if they was passed
         if (!empty($_GET['ID'])) {
             $conditions[] = "ID = " . $_GET['ID'];
         }
-        
+
         if (!empty($_GET['NAME'])) {
             $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['NAME']) . "%'";
         }
-        
+
         if (!empty($_GET['EINREISEDATUM'])) {
             $conditions[] = "EINREISEDATUM = '" . $_GET['EINREISEDATUM'] . "'";
         }
-        
+
         if (!empty($_GET['REISEDAUER'])) {
             $conditions[] = "UPPER(REISEDAUER) like '%" . strtoupper($_GET['REISEDAUER']) . "%'";
         }
-        
+
         if (!empty($_GET['PREIS'])) {
             $conditions[] = "PREIS = " . $_GET['PREIS'];
         }
-        
+
         if (!empty($conditions)) {
             $searchSql .= " WHERE " . implode(' AND ', $conditions);
         }
     }
-    
+
     //delete reise
     if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
         $deleteSql = "DELETE FROM Reise WHERE ID = " . $_GET['ID'];
-        
+
       //  $stmt = @oci_parse($conn, $deleteSql);
      // $result = @oci_execute($stmt);
-     
+
         $result = mysqli_query($conn,$deleteSql);
         if (!$result) {
             die("error while deleting id=" . $_GET['ID']);
@@ -61,28 +60,28 @@ include __DIR__ . '/../src/config.php';
     }
     //create reise
     if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-        $createSql = "INSERT INTO Reise (NAME, EINREISEDATUM, REISEDAUER, PREIS) VALUES('" . $_POST['NAME'] . "', '" . $_POST['EINREISEDATUM'] . "', '" . $_POST['REISEDAUER'] . "', " . $_POST['PREIS'] . ")";
-        
+        $createSql = "INSERT INTO Reise (id, NAME, EINREISEDATUM, REISEDAUER, PREIS) VALUES('" . $_POST['ID'] . "','" . $_POST['NAME'] . "', '" . $_POST['EINREISEDATUM'] . "', '" . $_POST['REISEDAUER'] . "', " . $_POST['PREIS'] . ")";
+
        $result = mysqli_query($conn, $createSql);
-        
+
         if (!$result) {
             die("error while creating reise "  . mysqli_error($conn));
         } else {
             header("Location: ?");
         }
     }
-    
+
     //update reise
     if (!empty($_GET['action']) && $_GET['action'] == 'update') {
         $getRowForUpdate = "SELECT * FROM Reise WHERE ID = '" . $_GET['ID'] . "'";
         $stmt = mysqli_query($conn, $getRowForUpdate);
         $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
-        
+
         if (!empty($_POST)) {
             $updateSql = "UPDATE Reise SET NAME = '" . $_POST['NAME'] . "', EINREISEDATUM = '" . $_POST['EINREISEDATUM'] . "', REISEDAUER = '" . $_POST['REISEDAUER'] . "', PREIS = " . $_POST['PREIS'] . " WHERE ID = '" . $_GET['ID'] . "'";
-            
+
             $result = mysqli_query($conn, $updateSql);
-            
+
             if (!$result) {
                 die("error while updating reise" . mysqli_error($conn));
             } else {
@@ -90,15 +89,15 @@ include __DIR__ . '/../src/config.php';
             }
         }
     }
-    
+
     //add order for beautify
     $searchSql .= " ORDER BY ID";
-    
-    
+
+
     //parse and execute sql statement
     $result = mysqli_query($conn,$searchSql);
-   
-   
+
+
     ?>
 
 <html>
@@ -227,7 +226,7 @@ include __DIR__ . '/../src/config.php';
 
 
 <?php
-    
+
     mysqli_free_result($result);
     mysqli_close($conn);
     ?>
