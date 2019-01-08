@@ -143,9 +143,6 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
                 <a href="platzierung.php">Platzierung</a>
               </li>
               <li>
-                <a href="procedure.php">Procedure</a>
-              </li>
-              <li>
                 <a href="reise.php">Reise</a>
               </li>
               <li>
@@ -163,16 +160,6 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
           <li><a href="index.php">Home</a></li>
           <li class="active">Personen</li>
         </ol>
-
-        <!-- ошибки если есть -->
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
 
         <!-- основная панель с таблицей -->
         <div class="panel panel-default">
