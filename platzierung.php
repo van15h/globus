@@ -1,5 +1,3 @@
-
-
 <?php
     include __DIR__ . '/../src/config.php';
     
@@ -15,7 +13,9 @@
 
 //preparing sql query for platzierung search
 $conditions = array();
-$searchSql = "SELECT * FROM platzierung";
+$searchSql = "SELECT Platzierung .hotelid AS hotelid, Platzierung.reiseid AS reiseid, Hotel.name AS hotelname, Reise.name AS reisename FROM Platzierung
+INNER JOIN Hotel ON Hotel.id = Platzierung .hotelid
+INNER JOIN Reise ON Reise.id = Platzierung.reiseid";
 
 //search platzierung
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -34,8 +34,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 
 //delete platzierung
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-  $deleteSql = "DELETE FROM platzierung WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
-
+  $deleteSql = "DELETE FROM Platzierung WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
  $result = mysqli_query($conn,$deleteSql);
 
   if (!$result) {
@@ -48,7 +47,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
 //create platzierung
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
-  $createSql = "INSERT INTO platzierung (HOTELID, REISEID) VALUES(" . $_POST['HOTELID'] . ", " . $_POST['REISEID'] . ")";
+  $createSql = "INSERT INTO Platzierung (HOTELID, REISEID) VALUES(" . $_POST['HOTELID'] . ", " . $_POST['REISEID'] . ")";
 
  $result = mysqli_query($conn, $createSql);
     
@@ -61,12 +60,12 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 
 //update platzierung
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
-  $getRowForUpdate = "SELECT * FROM platzierung WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
+  $getRowForUpdate = "SELECT * FROM Platzierung WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
     $stmt = mysqli_query($conn, $getRowForUpdate);
     $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);;
 
   if (!empty($_POST)) {
-    $updateSql = "UPDATE platzierung SET HOTELID = " . $_POST['HOTELID'] . ", REISEID = " . $_POST['REISEID'] . " WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
+    $updateSql = "UPDATE Platzierung SET HOTELID = " . $_POST['HOTELID'] . ", REISEID = " . $_POST['REISEID'] . " WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
 
       $result = mysqli_query($conn, $updateSql);
       
@@ -87,12 +86,14 @@ $searchSql .= " ORDER BY HOTELID, REISEID";
 $result = mysqli_query($conn,$searchSql);
 
 //additional result for fetching hotels for select dropdown
-$result1 = mysqli_query($conn, 'select ID, NAME from hotel');
+$result1 = mysqli_query($conn, 'select id, name from Hotel');
 
 
 //additional result for fetching reise for select dropdown
-$result2 = mysqli_query($conn, 'select ID, NAME from reise');
+$result2 = mysqli_query($conn, 'select id, name from Reise');
 
+
+/**
 if (!$result) {
  die("error while adding " . mysqli_error($conn));
 }
@@ -100,6 +101,7 @@ if (!$result) {
 if (!$result1) {
    die("error while adding hotel " . mysqli_error($conn));
 }
+**/
 ?>
 
 <html>
@@ -128,7 +130,7 @@ if (!$result1) {
                 <a href="kunde.php">Kunde</a>
               </li>
               <li>
-                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
+                <a href="mitarbeiter.php">Mitarbeiter</a>
               </li>
               <li>
                 <a href="personen.php">Personen</a>
@@ -199,33 +201,17 @@ if (!$result1) {
                   </tr>
 
                   <!-- вывод строк с информацией из базы -->
-                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
-                    <tr>
-                      <td>
-                        <?php
-                          while($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
-                            echo $row2['ID'] === $row['HOTELID'] ? $row2['NAME'] : '';
-                          }
-
-                          //rewind cursor
-                          oci_execute($stmt2);
-                        ?>
-                      </td>
-                      <td>
-                        <?php
-                          while($row3 = mysqli_fetch_array($result3, MYSQLI_ASSOC)) {
-                            echo $row3['ID'] === $row['REISEID'] ? $row3['NAME'] : '';
-                          }
-
-                          //rewind cursor
-                         // oci_execute($stmt3);
-                            mysqli_query($result3);
-                        ?>
-                      </td>
-                      <td><a href="?action=update&HOTELID=<?= $row["HOTELID"] ?>&REISEID=<?= $row["REISEID"] ?>">update</a></td>
-                      <td><a href="?action=delete&HOTELID=<?= $row["HOTELID"] ?>&REISEID=<?= $row["REISEID"] ?>">delete</a></td>
+                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>                   
+                     <tr>
+                      <td class="th1"><?= $row['hotelname'] ?></td>
+                      <td><?= $row['reisename']; ?></td>                                                                                                                 
+                      <td><a href="?action=update&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">update</a></td>
+                      <td><a href="?action=delete&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">delete</a></td>
                     </tr>
-                  <?php endwhile; ?>
+                  <?php }?>
+				  
+				  
+
 
                 </tbody>
               </table>
@@ -236,10 +222,7 @@ if (!$result1) {
 
         
         <?php
-            mysqli_free_result($result2);
-            mysqli_close($conn);
-            mysqli_free_result($result1);
-            mysqli_close($conn);
+                      
             mysqli_free_result($result);
             mysqli_close($conn);
             ?>
@@ -255,8 +238,8 @@ if (!$result1) {
                 <label class="col-sm-3 control-label">HOTEL</label>
                 <div class="col-sm-9">
                   <select class="form-control" name='HOTELID'>
-                    <?php while($row = oci_fetch_array($stmt2, OCI_ASSOC)): ?>
-                      <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['HOTELID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
+                    <?php while($row = mysqli_fetch_array($result1, MYSQLI_ASSOC)): ?>
+                      <option value="<?= $row['id'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['hotelid'] === $row['id'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -266,8 +249,8 @@ if (!$result1) {
                 <label class="col-sm-3 control-label">REISE</label>
                 <div class="col-sm-9">
                   <select class="form-control" name='REISEID'>
-                    <?php while($row = oci_fetch_array($stmt3, OCI_ASSOC)): ?>
-                      <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['REISEID'] === $row['ID'] ? 'selected' : '') ?>><?= $row['NAME'] ?></option>
+                    <?php while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
+                      <option value="<?= $row['id'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['reiseid'] === $row['id'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -281,12 +264,8 @@ if (!$result1) {
                 </div>
               </div>
             </form>
-
           </div>
         </div>
-
-        <?php  oci_free_statement($stmt2); ?>
-        
       </div>
     </div>
 </body>
