@@ -1,9 +1,9 @@
-<?php    
+<?php
     include __DIR__ . '/../src/config.php';
-    
+
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-    
+
     // Check connection
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
@@ -57,10 +57,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 //delete person
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
   $deleteSql = "DELETE FROM Person WHERE ID = " . $_GET['ID'];
-  //$stmt = @oci_parse($conn, $deleteSql);
-  //$result = @oci_execute($stmt);
-    $result = mysqli_query($conn,$deleteSql);
-    
+  $result = mysqli_query($conn,$deleteSql);
+
   if (!$result) {
        die("error while deleting id=" . $_GET['ID']);
            } else {
@@ -72,55 +70,42 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $createSql = "INSERT INTO Person (id, name, SVNummer, geburtsdatum, email, plz, ort, strasse) VALUES(" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['SVNummer'] . "', '" . $_POST['GEBURTSDATUM'] . "', '" . $_POST['EMAIL'] . "', '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "')";
 
-//$stmt = @oci_parse($conn, $createSql);
-//  $result = @oci_execute($stmt);
-
     $result = mysqli_query($conn,$createSql);
   if (!$result) {
      die("error while creating person". mysqli_error($conn));
   } else {
     header("Location: ?");
   }
-  
+
 }
 
 //update person
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM Person WHERE ID = '" . $_GET['ID'] . "'";
   $stmt = mysqli_query($conn, $getRowForUpdate);
-//  oci_execute($stmt);
     $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
     $updateSql = "UPDATE Person SET NAME = '" . $_POST['NAME'] . "', SVNummer = '" . $_POST['SVNummer'] . "', GEBURTSDATUM = '" . $_POST['GEBURTSDATUM'] . "', EMAIL = '" . $_POST['EMAIL'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
-   // $stmt = @oci_parse($conn, $updateSql);
-   // $result = @oci_execute($stmt);
-      
        $result = mysqli_query($conn, $updateSql);
 
     if (!$result) {
-        die("error while updating person");
-        
+        die("error while updating person". mysqli_error($conn));
     } else {
       header("Location: ?");
     }
   }
 }
 
-//add order for beautify
-$searchSql .= " ORDER BY ID";
-
-
-//parse and execute sql statement
-//$stmt = oci_parse($conn, $searchSql);
-//$result = oci_execute($stmt);
+    //add order for beautify
+    $searchSql .= " ORDER BY ID";
 
     $result = mysqli_query($conn,$searchSql);
-    
-//if (!$result) {
-  // die("error while adding person");
-//}
+
+    if (!$result) {
+      die("error while adding person". mysqli_error($conn));
+    }
 ?>
 
 <html>
@@ -212,8 +197,8 @@ $searchSql .= " ORDER BY ID";
                     <th width="200">PLZ</th>
                     <th class="th1" width="300">ORT</th>
                     <th class="th1" width="300">STRASSE</th>
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -252,21 +237,18 @@ $searchSql .= " ORDER BY ID";
             </form>
           </div>
         </div>
-        
 
-        
+
+
         <?php
-            //oci_free_statement($stmt);
             mysqli_free_result($result);
             mysqli_close($conn);
-            
-            
             ?>
 
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-            
+
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
@@ -339,7 +321,7 @@ $searchSql .= " ORDER BY ID";
 
           </div>
         </div>
-        
+
       </div>
     </div>
 </body>
