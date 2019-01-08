@@ -163,6 +163,7 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
 
               <input class="btn btn-link" type="submit" value="Refresh" />
 
+
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -173,6 +174,7 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                   </tr>
                 </thead>
                 <tbody>
+ 
                   <tr>
                     <td></td>
                     <td></td>
@@ -180,54 +182,28 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                     <td></td>
                   </tr>
 
-<<<<<<< HEAD
-                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>                   
-=======
-                  <!-- вывод строк с информацией из базы -->
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                      <tr>
                       <td class="th1"><?= $row['hotelname'] ?></td>
                       <td><?= $row['reisename']; ?></td>
                       <td><a href="?action=update&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">update</a></td>
                       <td><a href="?action=delete&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">delete</a></td>
                     </tr>
-<<<<<<< HEAD
-                  <?php }?>			
-=======
                   <?php }?>
-
-
-
-
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                 </tbody>
               </table>
             </form>
           </div>
-<<<<<<< HEAD
-        </div>               
-        <?php                    
-=======
         </div>
 
-
-
         <?php
-
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             mysqli_free_result($result);
             mysqli_close($conn);
             ?>
 
         <div class="panel panel-default">
           <div class="panel-body">
-<<<<<<< HEAD
-            
-=======
 
-            <!-- форма -->
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&HOTELID=' . $_GET['HOTELID'] . '&REISEID=' . $_GET['REISEID'] : 'create'?>" method='post'>
 
               <div class="form-group">
@@ -251,7 +227,6 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                   </select>
                 </div>
               </div>
-
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>

@@ -102,11 +102,9 @@ $result = mysqli_query($conn,$searchSql);
 //additional result for fetching persons for select dropdown
 
 $result2 = mysqli_query($conn, 'select id, name from Person');
-$result3 = mysqli_query($conn, 'select id, name from Reisebuero');
-<<<<<<< HEAD
-=======
 
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
+$result3 = mysqli_query($conn, 'select id, name from Reisebuero');
+
 ?>
 
 <html>
@@ -161,19 +159,7 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
           <li class="active">Mitarbeiter</li>
         </ol>
 
-<<<<<<< HEAD
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
-
-=======
-        <!-- основная панель с таблицей -->
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
+    
         <div class="panel panel-default">
           <div class="panel-body">
 
@@ -182,6 +168,7 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
 
               <input class="btn btn-link" type="submit" value="Refresh" />
 
+            
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -195,6 +182,7 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                   </tr>
                 </thead>
                 <tbody>
+ 
                   <tr>
                     <td><input name='PERSONID' value='<?= @$_GET['PERSONID'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='PERSON' value='<?= @$_GET['PERSON'] ?: '' ?>' style="width:100%" /></td>
@@ -205,17 +193,9 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                     <td></td>
                   </tr>
 
-<<<<<<< HEAD
-                  <?php 
-				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-				  echo $row;
-				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
-=======
-                  <!-- вывод строк с информацией из базы -->
 
                   <?php
           				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                     <tr>
                       <td class="th1"><?= $row['personid'] ?></td>
 					  <td><?= $row['name1'] ?></td>
@@ -232,28 +212,13 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
             </form>
           </div>
         </div>
-<<<<<<< HEAD
-		 <?php;
-            mysqli_free_result($result);
-            mysqli_close($conn);           
-            ?>
-        
-        <div class="panel panel-default">
-          <div class="panel-body">
-            
-=======
 		 <?php
             mysqli_free_result($result);
             mysqli_close($conn);
-
             ?>
-
-        <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- форма -->
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">PERSON</label>
@@ -298,15 +263,12 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                 </div>
               </div>
             </form>
+
           </div>
-<<<<<<< HEAD
-        </div>              
-=======
         </div>
 
 
 
->>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
       </div>
     </div>
 </body>
