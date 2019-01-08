@@ -131,7 +131,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
                 <a href="hotel.php">Hotel</a>
               </li>
               <li>
-                <a href="kunde.php">Kunde</a>
+                <a href="kunde.php">Kunde Registrieren</a>
               </li>
               <li>
                 <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>

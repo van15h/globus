@@ -115,7 +115,7 @@ include __DIR__ . '/../src/config.php';
         <a href="hotel.php">Hotel</a>
     </li>
     <li>
-        <a href="kunde.php">Kunde</a>
+        <a href="kunde.php">Kunde Registrieren</a>
     </li>
     <li>
         <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
@@ -147,7 +147,7 @@ include __DIR__ . '/../src/config.php';
 
 <!-- основная панель с таблицей -->
 <div class="panel panel-default">
-<div class="panel-body">
+<div class="panel-body" style="height: 400px; overflow-y: auto;">
 
 <!-- основная панель с таблицей -->
 <form id='hotel2' method='get'>

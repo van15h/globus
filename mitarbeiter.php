@@ -1,10 +1,10 @@
 <?php
- 
+
     include __DIR__ . '/../src/config.php';
-    
+
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-    
+
     // Check connection established
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
@@ -53,7 +53,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
   if (!$result) {
      die("error while deleting mitarbeiter" . $_GET['ID']);
-      
+
   } else {
     header("Location: ?");
   }
@@ -104,18 +104,7 @@ $result = mysqli_query($conn,$searchSql);
 $result2 = mysqli_query($conn, 'select id, name from Person');
 
 $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
-/**
-if (!$result) {
-  die("error while adding mitarbeiter" . mysqli_error($conn));
-}
 
-if (!$result2) {
-  die("error while adding person" . mysqli_error($conn));
-}
-
-if (!$result3) {
- die("error while adding reisebuero" . mysqli_error($conn));
-}**/
 ?>
 
 <html>
@@ -144,16 +133,13 @@ if (!$result3) {
                 <a href="kunde.php">Kunde</a>
               </li>
               <li class="active">
-                <a href="mitarbeiter.php">Mitarbeiter</a>
+                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
               </li>
               <li>
-                <a href="personen.php">Personen</a>
+                <a href="personen.php">Personen Registrieren</a>
               </li>
               <li>
                 <a href="platzierung.php">Platzierung</a>
-              </li>
-              <li>
-                <a href="procedure.php">Procedure</a>
               </li>
               <li>
                 <a href="reise.php">Reise</a>
@@ -173,16 +159,6 @@ if (!$result3) {
           <li><a href="index.php">Home</a></li>
           <li class="active">Mitarbeiter</li>
         </ol>
-
-        <!-- ошибки если есть -->
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
 
         <!-- основная панель с таблицей -->
         <div class="panel panel-default">
@@ -204,8 +180,8 @@ if (!$result3) {
                     <th class="th1" width="300">STEUERNUMMER</th>
                     <th class="th1" width="300">GEHALT</th>
                     <th class="th1" width="300">BESCHAEFTIGUNGRBID</th>
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -221,17 +197,15 @@ if (!$result3) {
                   </tr>
 
                   <!-- вывод строк с информацией из базы -->
-				  
-                  <?php 
-				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-				  echo $row;
-				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
+
+                  <?php
+          				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
                     <tr>
-                      <td class="th1"><?= $row['personid'] ?></td>  
-					  <td><?= $row['name1'] ?></td>					  
+                      <td class="th1"><?= $row['personid'] ?></td>
+					  <td><?= $row['name1'] ?></td>
                       <td><?= $row['steuernummer'] ?></td>
                       <td><?= $row['gehalt'] ?></td>
-					  <td><?= $row['name2'] ?></td>                    
+					  <td><?= $row['name2'] ?></td>
                       <td><a href="?action=update&PERSONID=<?= $row["personid"] ?>">update</a></td>
                       <td><a href="?action=delete&PERSONID=<?= $row["personid"] ?>">delete</a></td>
                     </tr>
@@ -243,16 +217,15 @@ if (!$result3) {
           </div>
         </div>
 		 <?php
-            //oci_free_statement($stmt);
             mysqli_free_result($result);
             mysqli_close($conn);
-            
+
             ?>
-        
+
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-            
+
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
@@ -303,8 +276,8 @@ if (!$result3) {
           </div>
         </div>
 
-        
-        
+
+
       </div>
     </div>
 </body>
