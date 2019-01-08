@@ -102,20 +102,7 @@ $result = mysqli_query($conn,$searchSql);
 //additional result for fetching persons for select dropdown
 
 $result2 = mysqli_query($conn, 'select id, name from Person');
-
 $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
-/**
-if (!$result) {
-  die("error while adding mitarbeiter" . mysqli_error($conn));
-}
-
-if (!$result2) {
-  die("error while adding person" . mysqli_error($conn));
-}
-
-if (!$result3) {
- die("error while adding reisebuero" . mysqli_error($conn));
-}**/
 ?>
 
 <html>
@@ -168,13 +155,11 @@ if (!$result3) {
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Mitarbeiter</li>
         </ol>
 
-        <!-- ошибки если есть -->
 
         <?php if (!empty($error)): ?>
           <div class="alert alert-danger">
@@ -184,18 +169,14 @@ if (!$result3) {
           </div>
         <?php endif; ?>
 
-        <!-- основная панель с таблицей -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- основная панель с таблицей -->
             <form id='hotel2' method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -209,7 +190,6 @@ if (!$result3) {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
                   <tr>
                     <td><input name='PERSONID' value='<?= @$_GET['PERSONID'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='PERSON' value='<?= @$_GET['PERSON'] ?: '' ?>' style="width:100%" /></td>
@@ -220,8 +200,6 @@ if (!$result3) {
                     <td></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
-				  
                   <?php 
 				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 				  echo $row;
@@ -242,18 +220,14 @@ if (!$result3) {
             </form>
           </div>
         </div>
-		 <?php
-            //oci_free_statement($stmt);
+		 <?php;
             mysqli_free_result($result);
-            mysqli_close($conn);
-            
+            mysqli_close($conn);           
             ?>
         
-        <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
             
-            <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">PERSON</label>
@@ -291,7 +265,6 @@ if (!$result3) {
                 </div>
               </div>
 
-              <!-- строка с кнопками отправки и сброса формы -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>
@@ -299,12 +272,8 @@ if (!$result3) {
                 </div>
               </div>
             </form>
-
           </div>
-        </div>
-
-        
-        
+        </div>              
       </div>
     </div>
 </body>

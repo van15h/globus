@@ -152,24 +152,19 @@ if (!$result2) {
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Buchung</li>
         </ol>
 
-        <!-- основная панель с таблицей -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- основная панель с таблицей -->
             <form method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -181,12 +176,10 @@ if (!$result2) {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
                   <tr>
                     <td><input name='KUNDE' value='<?= @$_GET['KUNDE'] ?: '' ?>' style="width:100%" /></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)):
                     ?>
                     <tr>
@@ -233,11 +226,9 @@ if (!$result2) {
             mysqli_close($conn);
             ?>
 
-        <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&KUNDENUMMER=' . $_GET['KUNDENUMMER'] . '&REISEID=' . $_GET['REISEID'] . '&REISEBUEROID=' . $_GET['REISEBUEROID'] : 'create'?>" method='post'>
 
               <div class="form-group">
@@ -274,7 +265,6 @@ if (!$result2) {
                 </div>
               </div>
 
-              <!-- строка с кнопками отправки и сброса формы -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>

@@ -92,16 +92,6 @@ $result1 = mysqli_query($conn, 'select id, name from Hotel');
 //additional result for fetching reise for select dropdown
 $result2 = mysqli_query($conn, 'select id, name from Reise');
 
-
-/**
-if (!$result) {
- die("error while adding " . mysqli_error($conn));
-}
-
-if (!$result1) {
-   die("error while adding hotel " . mysqli_error($conn));
-}
-**/
 ?>
 
 <html>
@@ -154,13 +144,11 @@ if (!$result1) {
       </div>
 
       <div class="col-md-9">
-        <!-- навигация -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Platzierung</li>
         </ol>
 
-        <!-- ошибки если есть -->
 
         <?php if (!empty($error)): ?>
           <div class="alert alert-danger">
@@ -170,18 +158,14 @@ if (!$result1) {
           </div>
         <?php endif; ?>
 
-        <!-- основная панель с таблицей -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- основная панель с таблицей -->
             <form method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- кнопка с обновлением -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
-              <!-- основная таблица -->
               <table class="table table-striped table-responsive">
                 <thead>
                   <tr>
@@ -192,7 +176,6 @@ if (!$result1) {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- строка с поиском -->
                   <tr>
                     <td></td>
                     <td></td>
@@ -200,7 +183,6 @@ if (!$result1) {
                     <td></td>
                   </tr>
 
-                  <!-- вывод строк с информацией из базы -->
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>                   
                      <tr>
                       <td class="th1"><?= $row['hotelname'] ?></td>
@@ -208,30 +190,20 @@ if (!$result1) {
                       <td><a href="?action=update&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">update</a></td>
                       <td><a href="?action=delete&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">delete</a></td>
                     </tr>
-                  <?php }?>
-				  
-				  
-
-
+                  <?php }?>			
                 </tbody>
               </table>
             </form>
           </div>
-        </div>
-        
-
-        
-        <?php
-                      
+        </div>               
+        <?php                    
             mysqli_free_result($result);
             mysqli_close($conn);
             ?>
 
-        <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
             
-            <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&HOTELID=' . $_GET['HOTELID'] . '&REISEID=' . $_GET['REISEID'] : 'create'?>" method='post'>
 
               <div class="form-group">
@@ -256,7 +228,6 @@ if (!$result1) {
                 </div>
               </div>
 
-              <!-- строка с кнопками отправки и сброса формы -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>
