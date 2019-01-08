@@ -118,7 +118,7 @@ include __DIR__ . '/../src/config.php';
         <a href="kunde.php">Kunde</a>
     </li>
     <li>
-        <a href="mitarbeiter.php">Mitarbeiter</a>
+        <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
     </li>
     <li>
         <a href="personen.php">Personen</a>

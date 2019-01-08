@@ -1,10 +1,10 @@
 <?php
-
+ 
     include __DIR__ . '/../src/config.php';
-
+    
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-
+    
     // Check connection established
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
@@ -13,7 +13,13 @@
 
 //preparing sql query for mitarbeiter search
 $conditions = array();
-$searchSql = "SELECT * FROM Mitarbeiter";
+//$searchSql = "SELECT * FROM mitarbeiter";
+
+$searchSql = "SELECT Mitarbeiter.personid AS personid, Mitarbeiter.steuernummer AS steuernummer, Mitarbeiter.gehalt AS gehalt,
+Mitarbeiter.beschaeftigungRBid AS beschaeftigungRBid, Person.name AS name1, Reisebuero.id AS name2 FROM Mitarbeiter
+INNER JOIN Reisebuero ON Reisebuero.id = Mitarbeiter.beschaeftigungRBid
+INNER JOIN Person ON Person.id = Mitarbeiter.personid";
+
 
 //search mitarbeiter
 if (!empty($_GET['action']) && $_GET['action'] == 'search') {
@@ -46,7 +52,8 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
  $result = mysqli_query($conn,$deleteSql);
 
   if (!$result) {
-     die("error while deleting mitarbeiter" . mysqli_error($conn));
+     die("error while deleting mitarbeiter" . $_GET['ID']);
+      
   } else {
     header("Location: ?");
   }
@@ -71,10 +78,11 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $stmt = mysqli_query($conn, $getRowForUpdate);
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
+
   if (!empty($_POST)) {
     $updateSql = "UPDATE Mitarbeiter SET STEUERNUMMER = " . $_POST['STEUERNUMMER'] . ", GEHALT = " . $_POST['GEHALT'] . ", BESCHAEFTIGUNGRBID = '" . $_POST['BESCHAEFTIGUNGRBID'] . "' WHERE PERSONID = " . $_GET['PERSONID'];
 
-    $result = mysqli_query($conn, $updateSql);
+      $result = mysqli_query($conn, $updateSql);
 
     if (!$result) {
       die("error while updating mitarbeiter" . mysqli_error($conn));
@@ -92,21 +100,22 @@ $searchSql .= " ORDER BY PERSONID";
 $result = mysqli_query($conn,$searchSql);
 
 //additional result for fetching persons for select dropdown
-$result2 = mysqli_query($conn, 'select ID, NAME from Person');
 
-$result3 = mysqli_query($conn, 'select ID, NAME from Reisebuero');
+$result2 = mysqli_query($conn, 'select id, name from Person');
 
+$result3 = mysqli_query($conn, 'select id, name from Reisebuero');
+/**
 if (!$result) {
-  die("error while get from mitarbeiter" . mysqli_error($conn));
+  die("error while adding mitarbeiter" . mysqli_error($conn));
 }
 
 if (!$result2) {
-  die("error while get from person" . mysqli_error($conn));
+  die("error while adding person" . mysqli_error($conn));
 }
 
 if (!$result3) {
- die("error while get from reisebuero" . mysqli_error($conn));
-}
+ die("error while adding reisebuero" . mysqli_error($conn));
+}**/
 ?>
 
 <html>
@@ -144,6 +153,9 @@ if (!$result3) {
                 <a href="platzierung.php">Platzierung</a>
               </li>
               <li>
+                <a href="procedure.php">Procedure</a>
+              </li>
+              <li>
                 <a href="reise.php">Reise</a>
               </li>
               <li>
@@ -156,21 +168,31 @@ if (!$result3) {
       </div>
 
       <div class="col-md-9">
-        <!-- navigation -->
+        <!-- навигация -->
         <ol class="breadcrumb">
           <li><a href="index.php">Home</a></li>
           <li class="active">Mitarbeiter</li>
         </ol>
 
-        <!-- main div with table -->
+        <!-- ошибки если есть -->
+
+        <?php if (!empty($error)): ?>
+          <div class="alert alert-danger">
+            <?=isset($error['message']) ? $error['message'] : ''?> </br>
+            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
+            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
+          </div>
+        <?php endif; ?>
+
+        <!-- основная панель с таблицей -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- main form with table -->
+            <!-- основная панель с таблицей -->
             <form id='hotel2' method='get'>
               <input type="hidden" name="action" value="search">
 
-              <!-- refresh -->
+              <!-- кнопка с обновлением -->
               <input class="btn btn-link" type="submit" value="Refresh" />
 
               <!-- основная таблица -->
@@ -182,8 +204,8 @@ if (!$result3) {
                     <th class="th1" width="300">STEUERNUMMER</th>
                     <th class="th1" width="300">GEHALT</th>
                     <th class="th1" width="300">BESCHAEFTIGUNGRBID</th>
-                    <th width="50">update</th>
-                    <th width="50">delete</th>
+                    <th width="50">update</th> 
+                    <th width="50">delete</th>      
                   </tr>
                 </thead>
                 <tbody>
@@ -199,62 +221,45 @@ if (!$result3) {
                   </tr>
 
                   <!-- вывод строк с информацией из базы -->
-                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)): ?>
+				  
+                  <?php 
+				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+				  echo $row;
+				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
                     <tr>
-                      <td class="th1"><?= $row['personid'] ?></td>
-                      <td>
-                        <?php
-                          while($row2 = mysqli_fetch_array($result1, MYSQLI_ASSOC)) {
-                            echo $row2['id'] === $row['personid'] ? $row2['name'] : '';
-                          }
-                          // //rewind cursor
-                            //mysqli_free_result($result1);
-                          //   mysqli_close($conn);
-                        ?>
-                      </td>
+                      <td class="th1"><?= $row['personid'] ?></td>  
+					  <td><?= $row['name1'] ?></td>					  
                       <td><?= $row['steuernummer'] ?></td>
                       <td><?= $row['gehalt'] ?></td>
-                      <td>
-                        <?php
-                          while($row4 = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                            echo $row4['id'] === $row['beschaeftigungRBid'] ? $row4['name'] : '';
-                          }
-                          //rewind cursor
-                            //mysqli_free_result($result2);
-                            // mysqli_close($conn);                        ?>
-                      </td>
+					  <td><?= $row['name2'] ?></td>                    
                       <td><a href="?action=update&PERSONID=<?= $row["personid"] ?>">update</a></td>
                       <td><a href="?action=delete&PERSONID=<?= $row["personid"] ?>">delete</a></td>
                     </tr>
-                  <?php endwhile; ?>
+                  <?php } ?>
 
                 </tbody>
               </table>
             </form>
           </div>
         </div>
-
-
-
-    <?php
-        mysqli_free_result($result);
-        mysqli_close($conn);
-    ?>
-
+		 <?php
+            //oci_free_statement($stmt);
+            mysqli_free_result($result);
+            mysqli_close($conn);
+            
+            ?>
+        
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-
+            
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">PERSON</label>
                 <div class="col-sm-9">
-                  <select class="form-control" name='PERSONID' <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>>
-                    <?php
-                    $row = mysqli_fetch_array($result2, MYSQLI_ASSOC);
-                    echo $row;
-                    while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
+                  <select class="form-control" name='PERSONID' >
+                    <?php while($row = mysqli_fetch_array($result2, MYSQLI_ASSOC)): ?>
                       <option value="<?= $row['id'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['personid'] === $row['id'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
@@ -279,8 +284,8 @@ if (!$result3) {
                 <label class="col-sm-3 control-label">BESCHAEFTIGUNGRBID</label>
                 <div class="col-sm-9">
                   <select class="form-control" name='BESCHAEFTIGUNGRBID'>
-                    <?php while($row = mysqli_fetch_array($result1, MYSQLI_ASSOC)): ?>
-                      <option value="<?= $row['ID'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['beschaeftigungRBid'] === $row['id'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
+                    <?php while($row = mysqli_fetch_array($result3, MYSQLI_ASSOC)): ?>
+                      <option value="<?= $row['id'] ?>" <?= (isset($rowForUpdate) && $rowForUpdate['beschaeftigungRBid'] === $row['id'] ? 'selected' : '') ?>><?= $row['name'] ?></option>
                     <?php endwhile; ?>
                   </select>
                 </div>
@@ -298,13 +303,8 @@ if (!$result3) {
           </div>
         </div>
 
-        <?php
-            // mysqli_free_result($result1);
-            // mysqli_close($conn);
-            // mysqli_free_result($result);
-            // mysqli_close($conn);
-            ?>
-
+        
+        
       </div>
     </div>
 </body>
