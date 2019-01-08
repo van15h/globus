@@ -1,5 +1,4 @@
 <?php
-
 include __DIR__ . '/../src/config.php';
 
     //connection to db
@@ -47,16 +46,12 @@ include __DIR__ . '/../src/config.php';
     if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
         $deleteSql = "DELETE FROM Reise WHERE ID = " . $_GET['ID'];
 
-      //  $stmt = @oci_parse($conn, $deleteSql);
-     // $result = @oci_execute($stmt);
-
         $result = mysqli_query($conn,$deleteSql);
         if (!$result) {
             die("error while deleting id=" . $_GET['ID']);
+        } else {
+          header("Location: ?");
         }
-        // else {
-        //   header("Location: ?");
-        // }
     }
     //create reise
     if (!empty($_GET['action']) && $_GET['action'] == 'create') {
@@ -93,11 +88,8 @@ include __DIR__ . '/../src/config.php';
     //add order for beautify
     $searchSql .= " ORDER BY ID";
 
-
     //parse and execute sql statement
     $result = mysqli_query($conn,$searchSql);
-
-
     ?>
 
 <html>
@@ -134,10 +126,7 @@ include __DIR__ . '/../src/config.php';
     <li>
         <a href="platzierung.php">Platzierung</a>
     </li>
-    <li>
-        <a href="procedure.php">Procedure</a>
-    </li>
-        <li class="active">
+    <li class="active">
         <a href="reise.php">Reise</a>
     </li>
     <li>
@@ -155,16 +144,6 @@ include __DIR__ . '/../src/config.php';
 <li><a href="index.php">Home</a></li>
 <li class="active">Reise</li>
 </ol>
-
-<!-- ошибки если есть -->
-
-<?php if (!empty($error)): ?>
-<div class="alert alert-danger">
-<?=isset($error['message']) ? $error['message'] : ''?> </br>
-<small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-<small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-</div>
-<?php endif; ?>
 
 <!-- основная панель с таблицей -->
 <div class="panel panel-default">
@@ -225,7 +204,7 @@ include __DIR__ . '/../src/config.php';
 
 
 
-<?php
+    <?php
 
     mysqli_free_result($result);
     mysqli_close($conn);
@@ -240,14 +219,14 @@ include __DIR__ . '/../src/config.php';
         <div class="form-group">
             <label class="col-sm-3 control-label">id</label>
         <div class="col-sm-9">
-    <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['ID'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '') ?> />
+    <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '') ?> />
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label">name</label>
     <div class="col-sm-9">
-        <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['NAME'] : ''?>" />
+        <input class="form-control" name='NAME' value="<?=isset($rowForUpdate) ? $rowForUpdate['name'] : ''?>" />
     </div>
 </div>
 
@@ -255,7 +234,7 @@ include __DIR__ . '/../src/config.php';
     <div class="form-group">
         <label class="col-sm-3 control-label">EINREISEDATUM</label>
     <div class="col-sm-9">
-        <input class="form-control" name='EINREISEDATUM' value="<?=isset($rowForUpdate) ? $rowForUpdate['EINREISEDATUM'] : ''?>" />
+        <input class="form-control" name='EINREISEDATUM' value="<?=isset($rowForUpdate) ? $rowForUpdate['einreisedatum'] : ''?>" />
     </div>
 </div>
 
@@ -263,7 +242,7 @@ include __DIR__ . '/../src/config.php';
     <div class="form-group">
         <label class="col-sm-3 control-label">REISEDAUER</label>
     <div class="col-sm-9">
-        <input class="form-control" name='REISEDAUER' value="<?=isset($rowForUpdate) ? $rowForUpdate['REISEDAUER'] : ''?>" />
+        <input class="form-control" name='REISEDAUER' value="<?=isset($rowForUpdate) ? $rowForUpdate['reisedauer'] : ''?>" />
     </div>
 </div>
 
@@ -271,7 +250,7 @@ include __DIR__ . '/../src/config.php';
     <div class="form-group">
         <label class="col-sm-3 control-label">PREIS</label>
     <div class="col-sm-9">
-        <input class="form-control" name='PREIS' value="<?=isset($rowForUpdate) ? $rowForUpdate['PREIS'] : ''?>" />
+        <input class="form-control" name='PREIS' value="<?=isset($rowForUpdate) ? $rowForUpdate['preis'] : ''?>" />
     </div>
 </div>
 
