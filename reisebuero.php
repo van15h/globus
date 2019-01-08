@@ -10,7 +10,6 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-
 //preparing sql query for reisebuero search
 $conditions = array();
 $searchSql = "SELECT * FROM Reisebuero";
@@ -51,8 +50,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
 if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
   $deleteSql = "DELETE FROM Reisebuero WHERE ID = " . $_GET['ID'];
 
- 
-  $result =mysqli_query($conn, $deleteSql);
+  $result = mysqli_query($conn, $deleteSql);
 
   if (!$result) {
      die("error while deleting id=" . $_GET['ID']);
@@ -65,28 +63,23 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $createSql = "INSERT INTO Reisebuero (ID, NAME, PLZ, ORT, STRASSE, KONTODATEN) VALUES(" . $_POST['ID'] . ", '" . $_POST['NAME'] . "', '" . $_POST['PLZ'] . "', '" . $_POST['ORT'] . "', '" . $_POST['STRASSE'] . "', '" . $_POST['KONTODATEN'] . "')";
 
-  
   $result = mysqli_query($conn, $createSql);
 
   if (!$result) {
      die("error while creating Reisebuero"  . mysqli_error($conn));
-  } 
-   /**else {
-    header("Location: ?");
-  }**/
+  }
 }
 
 //update reisebuero
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM Reisebuero WHERE ID = '" . $_GET['ID'] . "'";
   $stmt = mysqli_query($conn, $getRowForUpdate);
-  
+
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
     $updateSql = "UPDATE Reisebuero SET NAME = '" . $_POST['NAME'] . "', PLZ = '" . $_POST['PLZ'] . "', ORT = '" . $_POST['ORT'] . "', STRASSE = '" . $_POST['STRASSE'] . "', KONTODATEN = '" . $_POST['KONTODATEN'] . "' WHERE ID = '" . $_GET['ID'] . "'";
 
-    
     $result = mysqli_query($conn, $updateSql);
 
     if (!$result) {
@@ -100,14 +93,12 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
 //add order for beautify
 $searchSql .= " ORDER BY ID";
 
-
 //parse and execute sql statement
 $result = mysqli_query($conn, $searchSql);
-/**
+
 if (!$result) {
-  $error = oci_error($stmt);
+  die("error while get info from Reisebuero"  . mysqli_error($conn));
 }
-**/
 ?>
 
 <html>
@@ -145,9 +136,6 @@ if (!$result) {
                 <a href="platzierung.php">Platzierung</a>
               </li>
               <li>
-                <a href="procedure.php">Procedure</a>
-              </li>
-              <li>
                 <a href="reise.php">Reise</a>
               </li>
               <li class="active">
@@ -165,16 +153,6 @@ if (!$result) {
           <li><a href="index.php">Home</a></li>
           <li class="active">Reisebuero</li>
         </ol>
-
-        <!-- ошибки если есть -->
-
-        <?php if (!empty($error)): ?>
-          <div class="alert alert-danger">
-            <?=isset($error['message']) ? $error['message'] : ''?> </br>
-            <small><?=isset($error['sqltext']) ? $error['sqltext'] : ''?></small> </br>
-            <small><?=isset($error['offset']) ? 'Error position: ' . $error['offset'] : ''?></small>
-          </div>
-        <?php endif; ?>
 
         <!-- основная панель с таблицей -->
         <div class="panel panel-default">
@@ -196,9 +174,9 @@ if (!$result) {
                     <th width="200">plz</th>
                     <th class="th1" width="300">ort</th>
                     <th class="th1" width="300">strasse</th>
-                    <th class="th1" width="300">kontodaten</th>   
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th class="th1" width="300">kontodaten</th>
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -233,13 +211,11 @@ if (!$result) {
             </form>
           </div>
         </div>
-        
 
-       
         <!-- вторая панель с формой -->
         <div class="panel panel-default">
           <div class="panel-body">
-            
+
             <!-- форма -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
@@ -299,7 +275,7 @@ if (!$result) {
 
           </div>
         </div>
-        
+
       </div>
     </div>
 </body>
