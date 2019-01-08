@@ -26,7 +26,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'search') {
   }
 
   if (!empty($_GET['STERNE'])) {
-    $conditions[] = "UPPER(NAME) like '%" . strtoupper($_GET['STERNE']) . "%'";
+    $conditions[] = "STERNE = '" . $_GET['STERNE'] . "'";
   }
 
   if (!empty($_GET['verpflegung'])) {
@@ -228,14 +228,16 @@ $result = mysqli_query($conn,$searchHotelSql);
         <div class="panel panel-default">
           <div class="panel-body">
              <!-- fields -->
-            <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
-              <div class="form-group">
+             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
+            <!-- id label + input -->
+             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">id</label>
                 <div class="col-sm-10">
                   <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
                 </div>
               </div>
 
+              <!-- hotel name label+ input -->
               <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                 <div class="col-sm-10">
@@ -247,9 +249,16 @@ $result = mysqli_query($conn,$searchHotelSql);
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">sterne</label>
                 <div class="col-sm-10">
-                  <input class="form-control" name='STERNE' value="<?=isset($rowForUpdate) ? $rowForUpdate['sterne'] : ''?>" />
+                  <select name="STERNE" class="form-control">
+                    <option value="1" <?= isset($rowForUpdate) && $rowForUpdate['sterne'] === '1' ? 'selected' : '' ?>>1</option>
+                    <option value="2" <?= isset($rowForUpdate) && $rowForUpdate['sterne'] === '2' ? 'selected' : '' ?>>2</option>
+                    <option value="3" <?= isset($rowForUpdate) && $rowForUpdate['sterne'] === '3' ? 'selected' : '' ?>>3</option>
+                    <option value="4" <?= isset($rowForUpdate) && $rowForUpdate['sterne'] === '4' ? 'selected' : '' ?>>4</option>
+                    <option value="5" <?= isset($rowForUpdate) && $rowForUpdate['sterne'] === '5' ? 'selected' : '' ?>>5</option>
+                  </select>
                 </div>
               </div>
+
               <!-- verpflegung label + input -->
               <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">verpflegung</label>
@@ -286,7 +295,6 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
 
-
               <!-- send and reset buttons -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
@@ -295,10 +303,8 @@ $result = mysqli_query($conn,$searchHotelSql);
                 </div>
               </div>
             </form>
-
           </div>
         </div>
-
       </div>
     </div>
 </body>
