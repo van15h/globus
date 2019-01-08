@@ -87,21 +87,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
 $searchSql .= " ORDER BY ID";
 
 //parse and execute sql statement
-
 $result = mysqli_query($conn, $searchSql);
 
 //additional result for fetching hotels for select dropdown
 $result2 = mysqli_query($conn, 'select id, name from Hotel');
-
-/*
-if (!$result) {
-  $error = oci_error($stmt);
-}
-
-if (!$result2) {
-  $error = oci_error($stmt2);
-}
-*/
 ?>
 
 <html>
@@ -202,7 +191,7 @@ if (!$result2) {
                       <td><a href="?action=update&ID=<?= $row["id"] ?>">Update</a></td>
                       <td><a href="?action=delete&ID=<?= $row["id"] ?>">Delete</a></td>
                     </tr>
-                        <?php } ?>
+                  <?php } ?>
 
                 </tbody>
               </table>
@@ -210,11 +199,11 @@ if (!$result2) {
           </div>
         </div>
 
-        <!-- вторая панель с формой -->
+        <!-- second panel with form -->
         <div class="panel panel-default">
           <div class="panel-body">
 
-            <!-- форма -->
+            <!-- form -->
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&ID=' . $_GET['ID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">ID</label>
@@ -253,7 +242,7 @@ if (!$result2) {
                 </div>
               </div>
 
-              <!-- строка с кнопками отправки и сброса формы -->
+              <!-- submit and reset form -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-default">Save</button>
@@ -261,12 +250,8 @@ if (!$result2) {
                 </div>
               </div>
             </form>
-
           </div>
         </div>
-
-
-
       </div>
     </div>
 </body>
