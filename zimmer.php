@@ -119,7 +119,7 @@ $result2 = mysqli_query($conn, 'select id, name from Hotel');
                 <a href="kunde.php">Kunde</a>
               </li>
               <li>
-                <a href="mitarbeiter.php">Mitarbeiter</a>
+                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
               </li>
               <li>
                 <a href="personen.php">Personen</a>

@@ -113,7 +113,7 @@ if (!$result3) {
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <title>Mitarbeiter</title>
+    <title>Mitarbeiter Registrieren</title>
   </head>
 
   <body>
@@ -135,7 +135,7 @@ if (!$result3) {
                 <a href="kunde.php">Kunde</a>
               </li>
               <li class="active">
-                <a href="mitarbeiter.php">Mitarbeiter</a>
+                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
               </li>
               <li>
                 <a href="personen.php">Personen</a>
