@@ -68,7 +68,6 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
 if (!empty($_GET['action']) && $_GET['action'] == 'update') {
   $getRowForUpdate = "SELECT * FROM Zimmer WHERE ID = " . $_GET['ID'];
   $stmt = mysqli_query($conn, $getRowForUpdate);
-  //oci_execute($stmt);
   $rowForUpdate = mysqli_fetch_array($stmt, MYSQLI_ASSOC);
 
   if (!empty($_POST)) {
@@ -220,7 +219,7 @@ if (!$result2) {
               <div class="form-group">
                 <label class="col-sm-3 control-label">ID</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['ID'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
+                  <input class="form-control" name='ID' value="<?=isset($rowForUpdate) ? $rowForUpdate['id'] : ''?>" <?=(isset($_GET['action']) && $_GET['action'] == 'update' ? 'readonly' : '')?>/>
                 </div>
               </div>
 
@@ -238,7 +237,7 @@ if (!$result2) {
               <div class="form-group">
                 <label class="col-sm-3 control-label">NUMMER</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name='NUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['NUMMER'] : ''?>" />
+                  <input class="form-control" name='NUMMER' value="<?=isset($rowForUpdate) ? $rowForUpdate['nummer'] : ''?>" />
                 </div>
               </div>
 
@@ -246,10 +245,10 @@ if (!$result2) {
                 <label class="col-sm-3 control-label">VARIATION</label>
                 <div class="col-sm-9">
                   <select name="VARIATION" class="form-control">
-                    <option value="EZ" <?= (isset($rowForUpdate) && $rowForUpdate['VARIATION'] === 'EZ' ? 'selected' : '')?>>EZ</option>
-                    <option value="DZ" <?= (isset($rowForUpdate) && $rowForUpdate['VARIATION'] === 'DZ' ? 'selected' : '')?>>DZ</option>
-                    <option value="Suit" <?= (isset($rowForUpdate) && $rowForUpdate['VARIATION'] === 'Suit' ? 'selected' : '')?>>Suit</option>
-                    <option value="DeLUX" <?= (isset($rowForUpdate) && $rowForUpdate['VARIATION'] === 'DeLUX' ? 'selected' : '')?>>DeLUX</option>
+                    <option value="EZ" <?= (isset($rowForUpdate) && $rowForUpdate['variation'] === 'EZ' ? 'selected' : '')?>>EZ</option>
+                    <option value="DZ" <?= (isset($rowForUpdate) && $rowForUpdate['variation'] === 'DZ' ? 'selected' : '')?>>DZ</option>
+                    <option value="Suit" <?= (isset($rowForUpdate) && $rowForUpdate['variation'] === 'Suit' ? 'selected' : '')?>>Suit</option>
+                    <option value="DeLUX" <?= (isset($rowForUpdate) && $rowForUpdate['variation'] === 'DeLUX' ? 'selected' : '')?>>DeLUX</option>
                   </select>
                 </div>
               </div>
