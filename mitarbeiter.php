@@ -1,10 +1,10 @@
 <?php
- 
+
     include __DIR__ . '/../src/config.php';
-    
+
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-    
+
     // Check connection established
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
@@ -53,7 +53,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
   if (!$result) {
      die("error while deleting mitarbeiter" . $_GET['ID']);
-      
+
   } else {
     header("Location: ?");
   }
@@ -103,6 +103,10 @@ $result = mysqli_query($conn,$searchSql);
 
 $result2 = mysqli_query($conn, 'select id, name from Person');
 $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
 ?>
 
 <html>
@@ -131,16 +135,13 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                 <a href="kunde.php">Kunde</a>
               </li>
               <li class="active">
-                <a href="mitarbeiter.php">Mitarbeiter</a>
+                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
               </li>
               <li>
-                <a href="personen.php">Personen</a>
+                <a href="personen.php">Personen Registrieren</a>
               </li>
               <li>
                 <a href="platzierung.php">Platzierung</a>
-              </li>
-              <li>
-                <a href="procedure.php">Procedure</a>
               </li>
               <li>
                 <a href="reise.php">Reise</a>
@@ -160,6 +161,7 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
           <li class="active">Mitarbeiter</li>
         </ol>
 
+<<<<<<< HEAD
 
         <?php if (!empty($error)): ?>
           <div class="alert alert-danger">
@@ -169,6 +171,9 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
           </div>
         <?php endif; ?>
 
+=======
+        <!-- основная панель с таблицей -->
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
         <div class="panel panel-default">
           <div class="panel-body">
 
@@ -185,8 +190,8 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                     <th class="th1" width="300">STEUERNUMMER</th>
                     <th class="th1" width="300">GEHALT</th>
                     <th class="th1" width="300">BESCHAEFTIGUNGRBID</th>
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,16 +205,23 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
                     <td></td>
                   </tr>
 
+<<<<<<< HEAD
                   <?php 
 				  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 				  echo $row;
 				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
+=======
+                  <!-- вывод строк с информацией из базы -->
+
+                  <?php
+          				  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                     <tr>
-                      <td class="th1"><?= $row['personid'] ?></td>  
-					  <td><?= $row['name1'] ?></td>					  
+                      <td class="th1"><?= $row['personid'] ?></td>
+					  <td><?= $row['name1'] ?></td>
                       <td><?= $row['steuernummer'] ?></td>
                       <td><?= $row['gehalt'] ?></td>
-					  <td><?= $row['name2'] ?></td>                    
+					  <td><?= $row['name2'] ?></td>
                       <td><a href="?action=update&PERSONID=<?= $row["personid"] ?>">update</a></td>
                       <td><a href="?action=delete&PERSONID=<?= $row["personid"] ?>">delete</a></td>
                     </tr>
@@ -220,6 +232,7 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
             </form>
           </div>
         </div>
+<<<<<<< HEAD
 		 <?php;
             mysqli_free_result($result);
             mysqli_close($conn);           
@@ -228,6 +241,19 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
         <div class="panel panel-default">
           <div class="panel-body">
             
+=======
+		 <?php
+            mysqli_free_result($result);
+            mysqli_close($conn);
+
+            ?>
+
+        <!-- вторая панель с формой -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <!-- форма -->
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&PERSONID=' . $_GET['PERSONID'] : 'create'?>" method='post'>
               <div class="form-group">
                 <label class="col-sm-3 control-label">PERSON</label>
@@ -273,7 +299,14 @@ $result3 = mysqli_query($conn, 'select id, name from Reisebuero');
               </div>
             </form>
           </div>
+<<<<<<< HEAD
         </div>              
+=======
+        </div>
+
+
+
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
       </div>
     </div>
 </body>

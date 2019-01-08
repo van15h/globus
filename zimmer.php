@@ -116,7 +116,7 @@ $result2 = mysqli_query($conn, 'select id, name from Hotel');
                 <a href="hotel.php">Hotel</a>
               </li>
               <li>
-                <a href="kunde.php">Kunde</a>
+                <a href="kunde.php">Kunde Registrieren</a>
               </li>
               <li>
                 <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
@@ -172,7 +172,7 @@ $result2 = mysqli_query($conn, 'select id, name from Hotel');
                 <tbody>
                   <!-- search -->
                   <tr>
-                    <td><input name='ID' value='<?= @$_GET['id'] ?: '' ?>' style="width:100%" /></td>
+                    <td></td>
                     <td><input name='HOTEL' value='<?= @$_GET['name'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='NUMMER' value='<?= @$_GET['nummer'] ?: '' ?>' style="width:100%" /></td>
                     <td><input name='VARIATION' value='<?= @$_GET['variation'] ?: '' ?>' style="width:100%" /></td>

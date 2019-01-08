@@ -1,15 +1,15 @@
 <?php
     include __DIR__ . '/../src/config.php';
-    
+
     //connection to db
     $conn = mysqli_connect(HOST_NAME, DB_USER, DB_PASS, DB_NAME);
-    
+
     // Check connection established
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
-    
-    
+
+
 
 //preparing sql query for platzierung search
 $conditions = array();
@@ -39,7 +39,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
 
   if (!$result) {
  die("error while deleting  "  . mysqli_error($conn));
-      
+
   } else {
     header("Location: ?");
   }
@@ -50,7 +50,7 @@ if (!empty($_GET['action']) && $_GET['action'] == 'create') {
   $createSql = "INSERT INTO Platzierung (HOTELID, REISEID) VALUES(" . $_POST['HOTELID'] . ", " . $_POST['REISEID'] . ")";
 
  $result = mysqli_query($conn, $createSql);
-    
+
   if (!$result) {
   die("error while creating "  . mysqli_error($conn));
   } else {
@@ -68,10 +68,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'update') {
     $updateSql = "UPDATE Platzierung SET HOTELID = " . $_POST['HOTELID'] . ", REISEID = " . $_POST['REISEID'] . " WHERE HOTELID = " . $_GET['HOTELID'] . " AND REISEID = " . $_GET['REISEID'];
 
       $result = mysqli_query($conn, $updateSql);
-      
+
       if (!$result) {
           die("error while updating " . mysqli_error($conn));
-          
+
       } else {
       header("Location: ?");
     }
@@ -117,19 +117,16 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                 <a href="hotel.php">Hotel</a>
               </li>
               <li>
-                <a href="kunde.php">Kunde</a>
+                <a href="kunde.php">Kunde Registrieren</a>
               </li>
               <li>
-                <a href="mitarbeiter.php">Mitarbeiter</a>
+                <a href="mitarbeiter.php">Mitarbeiter Registrieren</a>
               </li>
               <li>
                 <a href="personen.php">Personen</a>
               </li>
               <li class="active">
                 <a href="platzierung.php">Platzierung</a>
-              </li>
-              <li>
-                <a href="procedure.php">Procedure</a>
               </li>
               <li>
                 <a href="reise.php">Reise</a>
@@ -171,8 +168,8 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                   <tr>
                     <th class="th1" width="300">HOTEL</th>
                     <th class="th1" width="300">REISE</th>
-                    <th width="50">update</th> 
-                    <th width="50">delete</th>      
+                    <th width="50">update</th>
+                    <th width="50">delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -183,27 +180,54 @@ $result2 = mysqli_query($conn, 'select id, name from Reise');
                     <td></td>
                   </tr>
 
+<<<<<<< HEAD
                   <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>                   
+=======
+                  <!-- вывод строк с информацией из базы -->
+                  <?php while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){ ?>
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                      <tr>
                       <td class="th1"><?= $row['hotelname'] ?></td>
-                      <td><?= $row['reisename']; ?></td>                                                                                                                 
+                      <td><?= $row['reisename']; ?></td>
                       <td><a href="?action=update&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">update</a></td>
                       <td><a href="?action=delete&HOTELID=<?= $row["hotelid"] ?>&REISEID=<?= $row["reiseid"] ?>">delete</a></td>
                     </tr>
+<<<<<<< HEAD
                   <?php }?>			
+=======
+                  <?php }?>
+
+
+
+
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
                 </tbody>
               </table>
             </form>
           </div>
+<<<<<<< HEAD
         </div>               
         <?php                    
+=======
+        </div>
+
+
+
+        <?php
+
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             mysqli_free_result($result);
             mysqli_close($conn);
             ?>
 
         <div class="panel panel-default">
           <div class="panel-body">
+<<<<<<< HEAD
             
+=======
+
+            <!-- форма -->
+>>>>>>> d9892c2b3d8fc97898dc6593c29f515996621849
             <form class="form-horizontal" action="?action=<?=isset($_GET['action']) ? $_GET['action'] . '&HOTELID=' . $_GET['HOTELID'] . '&REISEID=' . $_GET['REISEID'] : 'create'?>" method='post'>
 
               <div class="form-group">
