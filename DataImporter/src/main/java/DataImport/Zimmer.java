@@ -1,3 +1,5 @@
+package DataImport;
+
 import java.sql.*;
 
 public class Zimmer {
@@ -20,9 +22,9 @@ public class Zimmer {
 	for (int i = 1; i <= 1000; i++) {
 		String insertSql = "INSERT INTO Zimmer (ID, HOTELID, NUMMER, VARIATION) VALUES ("
 			+ i
-			+ ", " + Main.random(1, 100)
-			+ ", " + Main.random(1, 1000)
-			+ ", '" + variations[ Main.random(1, 4) - 1 ] + "'"
+			+ ", " + DataImport.Main.random(1, 100)
+			+ ", " + DataImport.Main.random(1, 1000)
+			+ ", '" + variations[ DataImport.Main.random(1, 4) - 1 ] + "'"
 		+ ")";
 
 		try {

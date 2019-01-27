@@ -1,10 +1,29 @@
-import java.sql.*;
-import java.util.Random;
+import MongoMigration.KundeMigration;
+import MongoMigration.Migration;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("-------- Mysql JDBC Connection Testing ------");
+        if (args[0].equals("import")) {
+            DataImport.Main.main(args);
+        }
 
+
+        if (args[0].equals("migrate")) {
+            migrateData();
+        }
+
+    }
+
+    private static void migrateData() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -23,30 +42,12 @@ public class Main {
             e.printStackTrace();
             return;
         }
-        
-        try {
-            if (connection != null) {
-                System.out.println("You made it, take control your database now!");
-//                Hotel.generate(connection);
-//                Zimmer.generate(connection);
-                Reise.generate(connection);
 
-                PersonGenerator personGenerator = PersonGenerator.getInstance(connection);
-                personGenerator.generate();
-            } else {
-                System.out.println("Failed to make connection!");
-            }
+        MongoCredential credential = MongoCredential.createCredential("imse", "globus", "ms3".toCharArray());
+        MongoClient mongoClient = new MongoClient(new ServerAddress("185.5.52.148", 27017), Arrays.asList(credential));
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("globus");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("FAILED SQL EXEPTION");
-        }
-
-    }
-
-    public static int random(int min, int max) {
-        Random rand = new Random();
-
-        return rand.nextInt((max - min) + 1) + min;
+        Migration kundeMigration = new KundeMigration(connection, mongoClient, mongoDatabase);
+        kundeMigration.migrate();
     }
 }

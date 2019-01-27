@@ -1,3 +1,5 @@
+package DataImport;
+
 import java.sql.*;
 
 public class Hotel {
@@ -23,12 +25,12 @@ public class Hotel {
 	for (int i = 100; i <= 200; i++) {
 		String insertSql = "INSERT INTO Hotel (id, name, sterne, verpflegung, plz, ort, strasse) VALUES ("
 			+ i
-			+ ", '" + names[ Main.random(1, 10) - 1 ] + "'"
-			+ ", " + Main.random(1, 5)
-			+ ", '" + verpflegungs[ Main.random(1, 3) - 1] + "'"
-			+ ", " + Main.random(1000, 9999)
-			+ ", '" + orts[ Main.random(1, 10) - 1 ] + "'" 
-			+ ", '" + strasses[ Main.random(1, 10) - 1 ] + "'"
+			+ ", '" + names[ DataImport.Main.random(1, 10) - 1 ] + "'"
+			+ ", " + DataImport.Main.random(1, 5)
+			+ ", '" + verpflegungs[ DataImport.Main.random(1, 3) - 1] + "'"
+			+ ", " + DataImport.Main.random(1000, 9999)
+			+ ", '" + orts[ DataImport.Main.random(1, 10) - 1 ] + "'"
+			+ ", '" + strasses[ DataImport.Main.random(1, 10) - 1 ] + "'"
 		+ ")";
 
 		try {

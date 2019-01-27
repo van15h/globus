@@ -1,7 +1,8 @@
+package DataImport;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Date.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,14 +51,14 @@ public class PersonGenerator {
     }
 
     private void generate(int id) {
-        String date = String.valueOf(Main.random(1, 28))
+        String date = String.valueOf(DataImport.Main.random(1, 28))
                 + '-'
-                + this.months.get(Main.random(1, 12) - 1)
+                + this.months.get(DataImport.Main.random(1, 12) - 1)
                 + '-'
-                + Main.random(17, 20);
+                + DataImport.Main.random(17, 20);
 
-        String firstName = this.firstNames.get(Main.random(0, this.firstNames.size() - 1));
-        String lastName = this.lastNames.get(Main.random(0, this.lastNames.size() - 1));
+        String firstName = this.firstNames.get(DataImport.Main.random(0, this.firstNames.size() - 1));
+        String lastName = this.lastNames.get(DataImport.Main.random(0, this.lastNames.size() - 1));
 
         String name = String.format("%s %s", firstName, lastName);
 
@@ -67,11 +68,11 @@ public class PersonGenerator {
             PreparedStatement preparedStatement = this.connection.prepareStatement(insertSql);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
-            preparedStatement.setString(3, "" + Main.random(1, 2305));
+            preparedStatement.setString(3, "" + DataImport.Main.random(1, 2305));
             LocalDate today = LocalDate.now();
 
             preparedStatement.setDate(4, java.sql.Date.valueOf(today));
-            preparedStatement.setString(5, firstName + this.emails.get(Main.random(0, this.emails.size() - 1)));
+            preparedStatement.setString(5, firstName + this.emails.get(DataImport.Main.random(0, this.emails.size() - 1)));
 
             preparedStatement.executeUpdate();
         } catch (Exception e) {
