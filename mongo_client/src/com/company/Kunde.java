@@ -40,6 +40,11 @@ public class Kunde {
       }
       case "update":
       case "delete":
+	  {
+		  MongoCollection<Document> collection = mdb.getCollection("Kunde");
+        collection.deleteOne(eq("kundenummer", args[2]));
+        break;
+	  }
       default: throw new IllegalArgumentException("unknown command");
     }
   }
