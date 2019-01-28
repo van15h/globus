@@ -26,6 +26,18 @@ public class Kunde {
         break;
       }
       case "read":
+	  {
+        MongoCollection<Document> collection = mdb.getCollection("Kunde");
+        MongoCursor<Document> cursor = collection.find().iterator();
+        try {
+          while (cursor.hasNext()) {
+            System.out.println(cursor.next().toJson());
+          }
+        } finally {
+          cursor.close();
+        }
+        break;
+      }
       case "update":
       case "delete":
       default: throw new IllegalArgumentException("unknown command");

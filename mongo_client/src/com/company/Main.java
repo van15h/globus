@@ -14,8 +14,10 @@ public class Main {
         MongoDatabase mongoDatabase = mongoClient.getDatabase("globus");
 
         switch (args[0]) {
-            case "kunde" :
+            case "kunde" :{
                 Kunde.handle(args, mongoDatabase);
+				break;
+			}
             default: throw  new IllegalArgumentException("no such usecase");
         }
     }
