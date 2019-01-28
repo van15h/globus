@@ -1,5 +1,6 @@
 package com.company;
 
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -24,6 +25,10 @@ public class Main {
                }
                case "mitarbeiter": {
                    Mitarbeiter.handle(args, mongoDatabase);
+                   break;
+               }
+               case "reisebuero": {
+                   Reisebuero.handle(args, mongoDatabase);
                    break;
                }
                default:

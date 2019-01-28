@@ -3,36 +3,47 @@ package com.company;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import java.util.ArrayList;
+import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-public class Kunde {
 
-  public static void handle(String[] args, MongoDatabase mdb){
+public class Reisebuero {
+  public static void handle(String[] args, MongoDatabase mdb) throws NullPointerException{
     switch (args[1]) {
       case "create": {
         Document doc = new Document()
-            .append("kundenummer", args[2])
+            .append("name", args[2])
             .append("kontodaten", args[3])
-            .append("name", args[4])
-            .append("svnummer", args[5])
-            .append("geburtsdatum", args[6])
-            .append("telefonnummer", args[7])
-            .append("email", args[8])
             .append("anschrift",
-                new Document("ort", args[9])
-                    .append("plz", args[10])
-                    .append("strasse", args[11]));
-        MongoCollection<Document> collection = mdb.getCollection("Kunde");
+                new Document("ort", args[4])
+                    .append("plz", args[5])
+                    .append("strasse", args[6])
+            );
+
+        List<ObjectId> mitarbeiterList = new ArrayList<>();
+        System.out.println(args[7]);
+        System.out.println(args[8]);
+        mitarbeiterList.add(new ObjectId(args[7]));
+        mitarbeiterList.add(new ObjectId(args[8]));
+        doc.append("mitarbeiter", mitarbeiterList);
+
+        MongoCollection<Document> collection = mdb.getCollection("Reisebuero");
         collection.insertOne(doc);
+
         System.out.println("create successfull");
         break;
       }
       case "read": {
-        MongoCollection<Document> collection = mdb.getCollection("Kunde");
+        MongoCollection<Document> collection = mdb.getCollection("Reisebuero");
         MongoCursor<Document> cursor = collection.find().iterator();
         try {
           while (cursor.hasNext()) {
@@ -44,18 +55,18 @@ public class Kunde {
         break;
       }
       case "update": {
-        mdb.getCollection("Kunde").updateOne(
+        mdb.getCollection("Reisebuero").updateOne(
             eq("_id", new ObjectId(args[2])),
             set("kontodaten", args[3]));
         System.out.println("update successfull");
         break;
       }
       case "delete": {
-		    MongoCollection<Document> collection = mdb.getCollection("Kunde");
-        collection.deleteOne(eq("kundenummer", args[2]));
+        MongoCollection<Document> collection = mdb.getCollection("Reisebuero");
+        collection.deleteOne(eq("_id", new ObjectId(args[2])));
         System.out.println("delete successfull");
         break;
-	    }
+      }
       default: throw new IllegalArgumentException("unknown command");
     }
   }
