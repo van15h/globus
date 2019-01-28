@@ -26,6 +26,10 @@ public class Main {
                    Mitarbeiter.handle(args, mongoDatabase);
                    break;
                }
+			   case "hotel" : {
+                Hotel.handle(args, mongoDatabase);
+                break;
+            }
                default:
                    throw new IllegalArgumentException("no such usecase");
            }
