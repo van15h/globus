@@ -35,6 +35,10 @@ public class Main {
                 Hotel.handle(args, mongoDatabase);
                 break;
                 }
+				 case "reise" : {
+                Reise.handle(args, mongoDatabase);
+                break;
+            }
                default:
                    throw new IllegalArgumentException("no such usecase");
            }
