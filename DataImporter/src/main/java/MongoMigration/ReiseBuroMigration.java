@@ -10,35 +10,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class KundeMigration extends Migration {
+public class ReiseBuroMigration extends Migration {
 
-    public KundeMigration(Connection connection, MongoClient client, MongoDatabase database) {
+    public ReiseBuroMigration(Connection connection, MongoClient client, MongoDatabase database) {
         super(connection, client, database);
     }
 
     @Override
     public void fetch() {
-        // migrate to kunde
         try (Statement statement = this.connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM Kunde INNER JOIN Person P ON Kunde.personid = P.id");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Reisebuero");
 
             while (resultSet.next()) {
                 Document document = new Document();
-                document.append("personid", resultSet.getString("personid"));
-                document.append("kundennummer", resultSet.getString("kundenummer"));
-                document.append("kontodaten", resultSet.getString("kontodaten"));
+                document.append("rbid", resultSet.getString("id"));
                 document.append("name", resultSet.getString("name"));
-                document.append("sv_nummer", resultSet.getString("SVNummer"));
-                document.append("geburtsdatum", resultSet.getString("geburtsdatum"));
-                document.append("telefonnummer", resultSet.getString("telefonnummer"));
-                document.append("email", resultSet.getString("email"));
+                document.append("kontodaten", resultSet.getString("kontodaten"));
                 document.append("anschrift",
                     new Document("ort", resultSet.getString("ort"))
                         .append("plz", resultSet.getString("plz"))
                         .append("strasse", resultSet.getString("strasse"))
                 );
 
-                MongoCollection<Document> collection = this.database.getCollection("Kunde");
+                MongoCollection<Document> collection = this.database.getCollection("Reisebuero");
                 collection.insertOne(document);
             }
 
@@ -46,6 +40,8 @@ public class KundeMigration extends Migration {
             e.printStackTrace();
         }
 
+        // ObjectId("5")
+        // mitarbeiterId: ObjectId("5")
     }
 
     @Override

@@ -1,5 +1,7 @@
 import MongoMigration.KundeMigration;
 import MongoMigration.Migration;
+import MongoMigration.MitarbeiterMigration;
+import MongoMigration.ReiseBuroMigration;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -48,6 +50,9 @@ public class Main {
         MongoDatabase mongoDatabase = mongoClient.getDatabase("globus");
 
         Migration kundeMigration = new KundeMigration(connection, mongoClient, mongoDatabase);
-        kundeMigration.migrate();
+        Migration mitarbeiterMigration = new MitarbeiterMigration(connection, mongoClient, mongoDatabase);
+        Migration reiseBueroMigration = new ReiseBuroMigration(connection, mongoClient, mongoDatabase);
+        reiseBueroMigration.migrate();
+        mitarbeiterMigration.migrate();
     }
 }
