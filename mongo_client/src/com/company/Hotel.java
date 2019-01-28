@@ -16,17 +16,20 @@ public class Hotel {
     public static void handle(String[] args, MongoDatabase mdb) {
         switch (args[1]) {
             case "create": {
-                Document doc = new Document()
+                 Document doc = new Document()
                         .append("name", args[2])
                         .append("sterne", args[3])
                         .append("verpflegung", args[4])
-                        .append("zimmer",
-                        new Document ("nummer", args[5])
-                        .append("variation", args[6]))
                         .append("anschrift",
-                                new Document("ort", args[7])
-                                        .append("plz", args[8])
-                                        .append("strasse", args[9]));
+                                new Document("ort", args[5])
+                                        .append("plz", args[6])
+                                        .append("strasse", args[7]));
+                Document zimmerDoc = new Document()
+                        .append("nummer", args[8])
+                        .append("variation", args[9]);
+                List<Document> documents= new ArrayList<>();
+                documents.add(zimmerDoc);
+                doc.append("zimmer", documents);
                 MongoCollection<Document> collection = mdb.getCollection("Hotel");
                 collection.insertOne(doc);
                 System.out.println("create successful");
