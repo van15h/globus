@@ -1,8 +1,13 @@
 package com.company;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class Kunde {
 
@@ -23,10 +28,10 @@ public class Kunde {
                     .append("strasse", args[11]));
         MongoCollection<Document> collection = mdb.getCollection("Kunde");
         collection.insertOne(doc);
+        System.out.println("create successfull");
         break;
       }
-      case "read":
-	  {
+      case "read": {
         MongoCollection<Document> collection = mdb.getCollection("Kunde");
         MongoCursor<Document> cursor = collection.find().iterator();
         try {
@@ -38,13 +43,19 @@ public class Kunde {
         }
         break;
       }
-      case "update":
-      case "delete":
-	  {
-		  MongoCollection<Document> collection = mdb.getCollection("Kunde");
-        collection.deleteOne(eq("kundenummer", args[2]));
+      case "update": {
+        mdb.getCollection("Kunde").updateOne(
+            eq("_id", new ObjectId(args[2])),
+            set("kontodaten", args[3]));
+        System.out.println("update successfull");
         break;
-	  }
+      }
+      case "delete": {
+		    MongoCollection<Document> collection = mdb.getCollection("Kunde");
+        collection.deleteOne(eq("kundenummer", args[2]));
+        System.out.println("delete successfull");
+        break;
+	    }
       default: throw new IllegalArgumentException("unknown command");
     }
   }

@@ -16,8 +16,8 @@ public class Main {
         switch (args[0]) {
             case "kunde" :{
                 Kunde.handle(args, mongoDatabase);
-				break;
-			}
+				        break;
+			      }
             default: throw  new IllegalArgumentException("no such usecase");
         }
     }
