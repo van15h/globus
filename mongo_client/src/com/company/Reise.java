@@ -5,9 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
