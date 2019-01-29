@@ -1,0 +1,27 @@
+java -jar mongo_client/mongo_client.jar
+
+CRUD kunde:
+java -jar mongo_client/mongo_client.jar kunde create 1231 at27328 "Thomas name" 1452141 14-09-1986 +4309367636 de@pm.me wien 1020 hophopstrasse
+java -jar mongo_client/mongo_client.jar kunde read
+java -jar mongo_client/mongo_client.jar kunde update 5c501d7d4c90c46b5b05e903 de3748
+java -jar mongo_client/mongo_client.jar kunde delete 1231
+
+CRUD hotel:
+java -jar mongo_client/mongo_client.jar hotel create nicehotel 5 VP gomel 2464 hahnstr 13 EZ
+java -jar mongo_client/mongo_client.jar hotel read
+java -jar mongo_client/mongo_client.jar hotel update 5c5023e74c90c474c6910f30 2
+java -jar mongo_client/mongo_client.jar hotel delete 5c5023e74c90c474c6910f30
+
+CRUD mitarbeiter:
+mitarbeiter create 1231 3000 Thomas 123141 14-09-1986 09367636 de@pm.me wien 1020 hophopstrasse
+mitarbeiter read
+mitarbeiter update 5c4f5c384c90c4416dd05158 5000
+mitarbeiter delete 1231
+
+CRUD reisebuero:
+reisebuero create vanish at123123 wien 1222 dortstrasse 5c4f1fa98ba93c2926322608 5c4f1fc08ba93c2926322609
+reisebuero read
+reisebuero update 5c4f6eb04c90c44fcc9810e0 ho234234
+reisebuero delete 5c4f6eb04c90c44fcc9810e0
+
+CRUD reise:
