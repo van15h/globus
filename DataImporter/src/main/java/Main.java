@@ -1,7 +1,4 @@
-import MongoMigration.KundeMigration;
-import MongoMigration.Migration;
-import MongoMigration.MitarbeiterMigration;
-import MongoMigration.ReiseBuroMigration;
+import MongoMigration.*;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -15,7 +12,7 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
         if (args[0].equals("import")) {
-            DataImport.Main.main(args);
+            DataImport.Main.importData();
         }
 
 
@@ -52,7 +49,12 @@ public class Main {
         Migration kundeMigration = new KundeMigration(connection, mongoClient, mongoDatabase);
         Migration mitarbeiterMigration = new MitarbeiterMigration(connection, mongoClient, mongoDatabase);
         Migration reiseBueroMigration = new ReiseBuroMigration(connection, mongoClient, mongoDatabase);
+        Migration hotelMigration = new HotelMigration(connection, mongoClient, mongoDatabase);
+        Migration reiseMigration = new ReiseMigration(connection, mongoClient, mongoDatabase);
+        kundeMigration.migrate();
         reiseBueroMigration.migrate();
         mitarbeiterMigration.migrate();
+        hotelMigration.migrate();
+        reiseMigration.migrate();
     }
 }

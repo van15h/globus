@@ -22,7 +22,7 @@ public class Hotel {
 	String[] strasses = {"Sonnenschein 2", "Sonnenschein 3", "Strand 3", "BIgman 62", "BIgman 11", "Sonnenschein 12", "BIgman 1", "Strand 91", "BIgmanein 2", "BIgman 99"};
 
 
-	for (int i = 100; i <= 200; i++) {
+	for (int i = 0; i <= 100; i++) {
 		String insertSql = "INSERT INTO Hotel (id, name, sterne, verpflegung, plz, ort, strasse) VALUES ("
 			+ i
 			+ ", '" + names[ DataImport.Main.random(1, 10) - 1 ] + "'"

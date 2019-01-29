@@ -19,7 +19,7 @@ public class Zimmer {
 	String[] variations = {"EZ", "DZ", "Suit", "DeLUX"};
 
 
-	for (int i = 1; i <= 1000; i++) {
+	for (int i = 1; i <= 100; i++) {
 		String insertSql = "INSERT INTO Zimmer (ID, HOTELID, NUMMER, VARIATION) VALUES ("
 			+ i
 			+ ", " + DataImport.Main.random(1, 100)

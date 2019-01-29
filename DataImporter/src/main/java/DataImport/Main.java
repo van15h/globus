@@ -6,11 +6,8 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public class Main {
-    public static void main(String[] args) {
-        Main.importData();
-    }
 
-    private static void importData() {
+    public static void importData() {
         System.out.println("-------- Mysql JDBC Connection Testing ------");
 
         try {

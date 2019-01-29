@@ -32,7 +32,7 @@ public class Reise {
 	String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
 
-	for (int i = 1; i <= 1000; i++) {
+	for (int i = 1; i <= 100; i++) {
 		LocalDate today = LocalDate.now();
 		today.withYear(DataImport.Main.random(2018, 2021));
 		today.withDayOfYear(DataImport.Main.random(1, 365));
